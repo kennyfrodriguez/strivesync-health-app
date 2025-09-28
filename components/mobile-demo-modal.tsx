@@ -78,7 +78,7 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-2xl">
             <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -92,17 +92,17 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="grid lg:grid-cols-2 gap-8 mt-6">
-          {/* Demo Device */}
-          <div className="flex justify-center">
-            <div className={`${config.width} ${config.height} relative`}>
+        <div className="grid lg:grid-cols-3 gap-8 mt-6">
+          {/* Demo Device - Now takes up more space */}
+          <div className="lg:col-span-2 flex justify-center">
+            <div className={`${config.width} ${config.height} relative`} style={{ transform: 'scale(1.2)' }}>
               {platform === "mobile" && <MobileDemo activeDemo={activeDemo} />}
               {platform === "watch" && <WatchDemo activeDemo={activeDemo} />}
               {platform === "web" && <WebDemo activeDemo={activeDemo} />}
             </div>
           </div>
 
-          {/* Controls & Features */}
+          {/* Controls & Features - Sidebar */}
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold mb-3">Interactive Features</h3>
