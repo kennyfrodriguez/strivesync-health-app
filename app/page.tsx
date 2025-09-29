@@ -70,7 +70,7 @@ export default function HomePage() {
           {/* AI Integration CTA */}
           <div className="mt-8 flex justify-center">
             <APITokenImport>
-              <Button variant="secondary" className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200 hover:from-purple-200 hover:to-pink-200">
+              <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg">
                 <Key className="w-4 h-4 mr-2" />
                 Import Your AI Tokens
                 <Sparkles className="w-4 h-4 ml-2" />

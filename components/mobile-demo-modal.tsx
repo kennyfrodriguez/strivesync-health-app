@@ -78,21 +78,22 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 text-2xl">
-            <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-              <IconComponent className="w-6 h-6 text-primary" />
-            </div>
-            {config.title}
-            <Badge variant="secondary" className="ml-auto">
-              <Sparkles className="w-4 h-4 mr-1" />
-              Interactive Demo
-            </Badge>
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent className="w-[98vw] h-[95vh] max-w-none overflow-y-auto">
+        <div className="p-6">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-3 text-2xl">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                <IconComponent className="w-6 h-6 text-primary" />
+              </div>
+              {config.title}
+              <Badge variant="secondary" className="ml-auto">
+                <Sparkles className="w-4 h-4 mr-1" />
+                Interactive Demo
+              </Badge>
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="grid lg:grid-cols-3 gap-8 mt-6">
+          <div className="grid lg:grid-cols-3 gap-8 mt-6">
           {/* Demo Device - Now takes up more space */}
           <div className="lg:col-span-2 flex justify-center">
             <div className={`${config.width} ${config.height} relative`} style={{ transform: 'scale(1.2)' }}>
@@ -166,6 +167,7 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
               </div>
             </div>
           </div>
+        </div>
         </div>
       </DialogContent>
     </Dialog>

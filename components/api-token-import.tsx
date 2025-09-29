@@ -137,7 +137,8 @@ export function APITokenImport({ children }: APITokenImportProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="max-w-7xl w-[95vw] max-h-[95vh] overflow-y-auto">
+      <DialogContent className="w-[98vw] h-[95vh] max-w-none overflow-y-auto">
+        <div className="p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 text-2xl">
             <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -423,6 +424,7 @@ CUSTOM_AI_ENDPOINT=https://..."
             </Card>
           </TabsContent>
         </Tabs>
+        </div>
       </DialogContent>
     </Dialog>
   )
