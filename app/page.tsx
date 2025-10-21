@@ -222,11 +222,11 @@ export default function HomePage() {
                     <li>• Detailed health analytics</li>
                     <li>• Family account management</li>
                   </ul>
-                  <div className="mt-6 flex justify-center">
-                    <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="mt-6 pt-4 border-t border-muted text-center">
+                    <span className="text-sm font-semibold text-primary group-hover:text-primary-foreground transition-colors inline-flex items-center gap-2">
                       Click to explore
-                      <span className="ml-2">→</span>
-                    </Button>
+                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -276,11 +276,11 @@ export default function HomePage() {
                     <li>• Emergency contacts</li>
                     <li>• Offline health records</li>
                   </ul>
-                  <div className="mt-6 flex justify-center">
-                    <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="mt-6 pt-4 border-t border-muted text-center">
+                    <span className="text-sm font-semibold text-primary group-hover:text-primary-foreground transition-colors inline-flex items-center gap-2">
                       Click to explore
-                      <span className="ml-2">→</span>
-                    </Button>
+                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </div>
                 </CardContent>
               </Card>
@@ -327,11 +327,11 @@ export default function HomePage() {
                     <li>• Health alerts</li>
                     <li>• Quick AI consultations</li>
                   </ul>
-                  <div className="mt-6 flex justify-center">
-                    <Button variant="outline" className="group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="mt-6 pt-4 border-t border-muted text-center">
+                    <span className="text-sm font-semibold text-primary group-hover:text-primary-foreground transition-colors inline-flex items-center gap-2">
                       Click to explore
-                      <span className="ml-2">→</span>
-                    </Button>
+                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
                   </div>
                 </CardContent>
               </Card>
