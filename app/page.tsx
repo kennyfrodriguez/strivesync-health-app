@@ -222,10 +222,10 @@ export default function HomePage() {
                     <li>• Detailed health analytics</li>
                     <li>• Family account management</li>
                   </ul>
-                  <div className="mt-6 pt-4 text-center">
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold group-hover:bg-emerald-700 transition-all shadow-md">
-                      Click to explore
-                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <div className="mt-8 text-center">
+                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
+                      🔥 CLICK TO EXPLORE 🔥
+                      <span className="text-xl">→</span>
                     </div>
                   </div>
                 </CardContent>
@@ -276,10 +276,10 @@ export default function HomePage() {
                     <li>• Emergency contacts</li>
                     <li>• Offline health records</li>
                   </ul>
-                  <div className="mt-6 pt-4 text-center">
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold group-hover:bg-emerald-700 transition-all shadow-md">
-                      Click to explore
-                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <div className="mt-8 text-center">
+                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
+                      🔥 CLICK TO EXPLORE 🔥
+                      <span className="text-xl">→</span>
                     </div>
                   </div>
                 </CardContent>
@@ -327,10 +327,10 @@ export default function HomePage() {
                     <li>• Health alerts</li>
                     <li>• Quick AI consultations</li>
                   </ul>
-                  <div className="mt-6 pt-4 text-center">
-                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-lg font-semibold group-hover:bg-emerald-700 transition-all shadow-md">
-                      Click to explore
-                      <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  <div className="mt-8 text-center">
+                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
+                      🔥 CLICK TO EXPLORE 🔥
+                      <span className="text-xl">→</span>
                     </div>
                   </div>
                 </CardContent>
