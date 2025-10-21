@@ -113,7 +113,8 @@
 
 /* base styles */
 * {
-  @apply border-border;
+  /* Tailwind v4 doesn't expose border-border in @apply; set color directly */
+  border-color: var(--border);
 }
 
 body {
