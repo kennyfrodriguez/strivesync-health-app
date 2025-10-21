@@ -3,8 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Heart, Shield, Brain, Smartphone, Watch, Monitor, Activity, Users, Star, Key, Sparkles, Zap, Eye, Palette, Layers } from "lucide-react"
 import Link from "next/link"
-import { MobileDemoModal } from "@/components/mobile-demo-modal"
-import { APITokenImport } from "@/components/api-token-import"
 
 export default function HomePage() {
   return (
@@ -59,23 +57,23 @@ export default function HomePage() {
                 Start Health Check
               </Link>
             </Button>
-            <MobileDemoModal platform="web">
-              <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent">
+            <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent" asChild>
+              <Link href="/demo/web">
                 <Monitor className="w-5 h-5 mr-2" />
                 View Interactive Demo
-              </Button>
-            </MobileDemoModal>
+              </Link>
+            </Button>
           </div>
           
           {/* AI Integration CTA */}
           <div className="mt-8 flex justify-center">
-            <APITokenImport>
-              <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg">
+            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg" asChild>
+              <Link href="/ai-integration">
                 <Key className="w-4 h-4 mr-2" />
                 Import Your AI Tokens
                 <Sparkles className="w-4 h-4 ml-2" />
-              </Button>
-            </APITokenImport>
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -181,7 +179,7 @@ export default function HomePage() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Web Platform */}
-            <MobileDemoModal platform="web">
+            <Link href="/demo/web">
               <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
@@ -231,10 +229,10 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
-            </MobileDemoModal>
+            </Link>
 
             {/* Mobile Platform */}
-            <MobileDemoModal platform="mobile">
+            <Link href="/demo/mobile">
               <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
@@ -284,10 +282,10 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
-            </MobileDemoModal>
+            </Link>
 
             {/* Watch Platform */}
-            <MobileDemoModal platform="watch">
+            <Link href="/demo/watch">
               <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
@@ -334,7 +332,7 @@ export default function HomePage() {
                   </div>
                 </CardContent>
               </Card>
-            </MobileDemoModal>
+            </Link>
           </div>
         </div>
       </section>
@@ -608,13 +606,13 @@ export default function HomePage() {
           </div>
 
           <div className="text-center">
-            <APITokenImport>
-              <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+            <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" asChild>
+              <Link href="/ai-integration">
                 <Key className="w-5 h-5 mr-2" />
                 Import Your AI Tokens Now
                 <Sparkles className="w-5 h-5 ml-2" />
-              </Button>
-            </APITokenImport>
+              </Link>
+            </Button>
             <p className="text-sm text-muted-foreground mt-4">
               Free setup • 2-minute integration • Works with existing AI subscriptions
             </p>
@@ -642,12 +640,12 @@ export default function HomePage() {
               <Activity className="w-5 h-5 mr-2" />
               Get Started Free
             </Button>
-            <MobileDemoModal platform="mobile">
-              <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent hover:bg-muted/50">
+            <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent hover:bg-muted/50" asChild>
+              <Link href="/demo/mobile">
                 <Eye className="w-5 h-5 mr-2" />
                 Try Interactive Demo
-              </Button>
-            </MobileDemoModal>
+              </Link>
+            </Button>
           </div>
 
           <div className="grid grid-cols-3 gap-8 text-center">

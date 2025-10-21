@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -23,15 +22,13 @@ import {
   Copy,
   Eye,
   EyeOff,
-  RefreshCw
+  RefreshCw,
+  ArrowLeft
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import Link from "next/link"
 
-interface APITokenImportProps {
-  children: React.ReactNode
-}
-
-export function APITokenImport({ children }: APITokenImportProps) {
+export default function AIIntegrationPage() {
   const [activeTab, setActiveTab] = useState("import")
   const [showTokens, setShowTokens] = useState(false)
   const [importMethod, setImportMethod] = useState("manual")
@@ -133,32 +130,43 @@ export function APITokenImport({ children }: APITokenImportProps) {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
-      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden flex flex-col p-6">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="flex flex-wrap items-center gap-3 text-2xl">
-            <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
-              <Key className="w-7 h-7 text-white" />
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link
+                href="/"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </Link>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                  <Key className="w-6 h-6 text-white" />
+                </div>
+                <span className="text-xl font-bold">AI Assistant Integration</span>
+              </div>
             </div>
-            <span className="font-bold">AI Assistant Integration</span>
-            <Badge variant="secondary" className="ml-auto">
+            <Badge variant="secondary">
               <Sparkles className="w-4 h-4 mr-1" />
               Enhanced Intelligence
             </Badge>
-          </DialogTitle>
-        </DialogHeader>
+          </div>
+        </div>
+      </header>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8 flex-1 flex flex-col overflow-hidden">
-          <TabsList className="grid w-full grid-cols-3 h-auto p-1 flex-shrink-0">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="grid w-full grid-cols-3 h-auto p-1">
             <TabsTrigger value="import" className="text-base py-3">Import Tokens</TabsTrigger>
             <TabsTrigger value="providers" className="text-base py-3">AI Providers</TabsTrigger>
             <TabsTrigger value="benefits" className="text-base py-3">Why Integrate?</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="import" className="space-y-6 mt-6 overflow-y-auto flex-1">
+          <TabsContent value="import" className="space-y-6">
             <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3 text-xl">
@@ -284,7 +292,7 @@ CUSTOM_AI_ENDPOINT=https://..."
             </Card>
           </TabsContent>
 
-          <TabsContent value="providers" className="space-y-6 mt-6 overflow-y-auto flex-1">
+          <TabsContent value="providers" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               {aiProviders.map((provider) => (
                 <Card key={provider.id} className="border-2 shadow-lg">
@@ -327,104 +335,105 @@ CUSTOM_AI_ENDPOINT=https://..."
             </div>
           </TabsContent>
 
-          <TabsContent value="benefits" className="space-y-6 mt-6 overflow-y-auto flex-1">
+          <TabsContent value="benefits" className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
-              <Card className="border-0 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+              <Card className="border-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-xl">
                     <Brain className="w-6 h-6 text-green-500" />
                     Enhanced Intelligence
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <Sparkles className="w-5 h-5 text-green-500 mt-0.5" />
+                    <Sparkles className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-sm">Multi-AI Consensus</p>
-                      <p className="text-xs text-muted-foreground">Get opinions from multiple AI models for more accurate health insights</p>
+                      <p className="font-medium text-base mb-1">Multi-AI Consensus</p>
+                      <p className="text-sm text-muted-foreground">Get opinions from multiple AI models for more accurate health insights</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Zap className="w-5 h-5 text-green-500 mt-0.5" />
+                    <Zap className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-sm">Specialized Expertise</p>
-                      <p className="text-xs text-muted-foreground">Each AI brings unique strengths - reasoning, analysis, multimodal processing</p>
+                      <p className="font-medium text-base mb-1">Specialized Expertise</p>
+                      <p className="text-sm text-muted-foreground">Each AI brings unique strengths - reasoning, analysis, multimodal processing</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-green-500 mt-0.5" />
+                    <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="font-medium text-sm">Redundancy & Reliability</p>
-                      <p className="text-xs text-muted-foreground">Backup AI systems ensure continuous health monitoring</p>
+                      <p className="font-medium text-base mb-1">Redundancy & Reliability</p>
+                      <p className="text-sm text-muted-foreground">Backup AI systems ensure continuous health monitoring</p>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-0 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+              <Card className="border-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-xl">
                     <Key className="w-6 h-6 text-purple-500" />
-                    Why UI > Pure AI
+                    Why UI Beats Pure AI
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="space-y-2">
-                    <p className="font-medium text-sm">Visual Health Context</p>
-                    <p className="text-xs text-muted-foreground">Charts, trends, and patterns provide instant understanding that text cannot match</p>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="font-medium text-base mb-1">Visual Health Context</p>
+                    <p className="text-sm text-muted-foreground">Charts, trends, and patterns provide instant understanding that text cannot match</p>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-medium text-sm">Emotional Design</p>
-                    <p className="text-xs text-muted-foreground">Calming colors, intuitive layouts reduce health anxiety and improve user experience</p>
+                  <div>
+                    <p className="font-medium text-base mb-1">Emotional Design</p>
+                    <p className="text-sm text-muted-foreground">Calming colors, intuitive layouts reduce health anxiety and improve user experience</p>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-medium text-sm">Multi-Modal Interaction</p>
-                    <p className="text-xs text-muted-foreground">Voice, touch, camera, sensors work together for comprehensive health monitoring</p>
+                  <div>
+                    <p className="font-medium text-base mb-1">Multi-Modal Interaction</p>
+                    <p className="text-sm text-muted-foreground">Voice, touch, camera, sensors work together for comprehensive health monitoring</p>
                   </div>
-                  <div className="space-y-2">
-                    <p className="font-medium text-sm">Instant Action</p>
-                    <p className="text-xs text-muted-foreground">One-tap emergency calls, medication tracking, appointment scheduling</p>
+                  <div>
+                    <p className="font-medium text-base mb-1">Instant Action</p>
+                    <p className="text-sm text-muted-foreground">One-tap emergency calls, medication tracking, appointment scheduling</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            <Card className="border-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+            <Card className="border-2 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
               <CardHeader>
-                <CardTitle>The Perfect Synergy: AI + UI</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-2xl">The Perfect Synergy: AI + UI</CardTitle>
+                <CardDescription className="text-base">
                   StriveSync combines the intelligence of AI with the intuition of great design
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-3 gap-6">
                   <div className="text-center p-4">
-                    <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Brain className="w-6 h-6 text-white" />
+                    <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Brain className="w-8 h-8 text-white" />
                     </div>
-                    <h4 className="font-medium mb-2">AI Processes</h4>
-                    <p className="text-xs text-muted-foreground">Complex health data analysis, pattern recognition, predictive insights</p>
+                    <h4 className="font-semibold text-lg mb-2">AI Processes</h4>
+                    <p className="text-sm text-muted-foreground">Complex health data analysis, pattern recognition, predictive insights</p>
                   </div>
                   <div className="text-center p-4">
-                    <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Sparkles className="w-6 h-6 text-white" />
+                    <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Sparkles className="w-8 h-8 text-white" />
                     </div>
-                    <h4 className="font-medium mb-2">UI Presents</h4>
-                    <p className="text-xs text-muted-foreground">Beautiful visualizations, intuitive interactions, emotional comfort</p>
+                    <h4 className="font-semibold text-lg mb-2">UI Presents</h4>
+                    <p className="text-sm text-muted-foreground">Beautiful visualizations, intuitive interactions, emotional comfort</p>
                   </div>
                   <div className="text-center p-4">
-                    <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Zap className="w-6 h-6 text-white" />
+                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Zap className="w-8 h-8 text-white" />
                     </div>
-                    <h4 className="font-medium mb-2">You Benefit</h4>
-                    <p className="text-xs text-muted-foreground">Faster decisions, reduced anxiety, better health outcomes</p>
+                    <h4 className="font-semibold text-lg mb-2">You Benefit</h4>
+                    <p className="text-sm text-muted-foreground">Faster decisions, reduced anxiety, better health outcomes</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   )
 }
+

@@ -35,8 +35,8 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
     mobile: {
       title: "Mobile App Experience",
       icon: Smartphone,
-      width: "w-80",
-      height: "h-[600px]",
+      width: "w-[320px]",
+      height: "h-[640px]",
       demos: {
         home: "AI Health Hub",
         chat: "Smart Consultation",
@@ -47,8 +47,8 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
     watch: {
       title: "Smartwatch Interface",
       icon: Watch,
-      width: "w-48",
-      height: "h-48",
+      width: "w-[240px]",
+      height: "h-[240px]",
       demos: {
         home: "Quick Stats",
         alerts: "Health Alerts",
@@ -59,8 +59,8 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
     web: {
       title: "Web Dashboard",
       icon: Monitor,
-      width: "w-full max-w-4xl",
-      height: "h-[500px]",
+      width: "w-full max-w-3xl",
+      height: "h-[480px]",
       demos: {
         dashboard: "Analytics Hub",
         ai: "AI Insights",
@@ -78,25 +78,24 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[98vw] h-[95vh] max-w-none overflow-y-auto">
-        <div className="p-6">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-3 text-2xl">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                <IconComponent className="w-6 h-6 text-primary" />
-              </div>
-              {config.title}
-              <Badge variant="secondary" className="ml-auto">
-                <Sparkles className="w-4 h-4 mr-1" />
-                Interactive Demo
-              </Badge>
-            </DialogTitle>
-          </DialogHeader>
+      <DialogContent className="max-w-[95vw] w-full max-h-[95vh] overflow-hidden flex flex-col p-6">
+        <DialogHeader className="flex-shrink-0">
+          <DialogTitle className="flex flex-wrap items-center gap-3 text-2xl">
+            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+              <IconComponent className="w-7 h-7 text-primary" />
+            </div>
+            <span className="font-bold">{config.title}</span>
+            <Badge variant="secondary" className="ml-auto">
+              <Sparkles className="w-4 h-4 mr-1" />
+              Interactive Demo
+            </Badge>
+          </DialogTitle>
+        </DialogHeader>
 
-          <div className="grid lg:grid-cols-3 gap-8 mt-6">
+        <div className="grid lg:grid-cols-3 gap-8 mt-8 flex-1 overflow-y-auto">
           {/* Demo Device - Now takes up more space */}
-          <div className="lg:col-span-2 flex justify-center">
-            <div className={`${config.width} ${config.height} relative`} style={{ transform: 'scale(1.2)' }}>
+          <div className="lg:col-span-2 flex justify-center items-center p-6 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-xl">
+            <div className={`${config.width} ${config.height} relative transform scale-110 lg:scale-125`}>
               {platform === "mobile" && <MobileDemo activeDemo={activeDemo} />}
               {platform === "watch" && <WatchDemo activeDemo={activeDemo} />}
               {platform === "web" && <WebDemo activeDemo={activeDemo} />}
@@ -104,13 +103,13 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
           </div>
 
           {/* Controls & Features - Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 overflow-y-auto">
             <div>
-              <h3 className="text-lg font-semibold mb-3">Interactive Features</h3>
+              <h3 className="text-xl font-bold mb-4">Interactive Features</h3>
               <Tabs value={activeDemo} onValueChange={setActiveDemo}>
-                <TabsList className="grid grid-cols-2 w-full">
+                <TabsList className="grid grid-cols-2 w-full h-auto p-1">
                   {Object.entries(config.demos).map(([key, label]) => (
-                    <TabsTrigger key={key} value={key} className="text-xs">
+                    <TabsTrigger key={key} value={key} className="text-sm py-3 px-4">
                       {label}
                     </TabsTrigger>
                   ))}
@@ -118,57 +117,56 @@ export function MobileDemoModal({ platform, children }: MobileDemoModalProps) {
               </Tabs>
             </div>
 
-            <Card className="border-0 bg-gradient-to-br from-primary/5 to-blue-50 dark:to-blue-950/20">
+            <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-blue-50 dark:to-blue-950/20">
               <CardContent className="p-6">
-                <h4 className="font-semibold mb-3 flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-primary" />
+                <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                  <Brain className="w-6 h-6 text-primary" />
                   AI-Powered Intelligence
                 </h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-yellow-500" />
-                    Real-time health analysis with predictive insights
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-start gap-3">
+                    <Zap className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                    <span>Real-time health analysis with predictive insights</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-green-500" />
-                    Privacy-first AI that learns your patterns securely
+                  <li className="flex items-start gap-3">
+                    <Shield className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <span>Privacy-first AI that learns your patterns securely</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <MessageCircle className="w-4 h-4 text-blue-500" />
-                    Natural conversation with medical-grade accuracy
+                  <li className="flex items-start gap-3">
+                    <MessageCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                    <span>Natural conversation with medical-grade accuracy</span>
                   </li>
-                  <li className="flex items-center gap-2">
-                    <Bell className="w-4 h-4 text-purple-500" />
-                    Proactive health alerts before symptoms appear
+                  <li className="flex items-start gap-3">
+                    <Bell className="w-5 h-5 text-purple-500 mt-0.5 flex-shrink-0" />
+                    <span>Proactive health alerts before symptoms appear</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <div className="space-y-3">
-              <h4 className="font-semibold">Why UI Beats Pure AI</h4>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-muted/50 rounded-lg">
-                  <div className="text-sm font-medium">Visual Context</div>
-                  <div className="text-xs text-muted-foreground">Charts, trends, and patterns at a glance</div>
+            <div className="space-y-4">
+              <h4 className="font-bold text-lg">Why UI Beats Pure AI</h4>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="p-4 bg-muted/50 rounded-lg border border-muted">
+                  <div className="text-base font-semibold mb-1">Visual Context</div>
+                  <div className="text-sm text-muted-foreground">Charts, trends, and patterns at a glance</div>
                 </div>
-                <div className="p-3 bg-muted/50 rounded-lg">
-                  <div className="text-sm font-medium">Instant Action</div>
-                  <div className="text-xs text-muted-foreground">One-tap emergency, medication, tracking</div>
+                <div className="p-4 bg-muted/50 rounded-lg border border-muted">
+                  <div className="text-base font-semibold mb-1">Instant Action</div>
+                  <div className="text-sm text-muted-foreground">One-tap emergency, medication, tracking</div>
                 </div>
-                <div className="p-3 bg-muted/50 rounded-lg">
-                  <div className="text-sm font-medium">Multi-Modal</div>
-                  <div className="text-xs text-muted-foreground">Voice, touch, camera, sensors combined</div>
+                <div className="p-4 bg-muted/50 rounded-lg border border-muted">
+                  <div className="text-base font-semibold mb-1">Multi-Modal</div>
+                  <div className="text-sm text-muted-foreground">Voice, touch, camera, sensors combined</div>
                 </div>
-                <div className="p-3 bg-muted/50 rounded-lg">
-                  <div className="text-sm font-medium">Emotional Design</div>
-                  <div className="text-xs text-muted-foreground">Calming colors, intuitive flows</div>
+                <div className="p-4 bg-muted/50 rounded-lg border border-muted">
+                  <div className="text-base font-semibold mb-1">Emotional Design</div>
+                  <div className="text-sm text-muted-foreground">Calming colors, intuitive flows</div>
                 </div>
               </div>
             </div>
-          </div>
         </div>
-        </div>
+      </div>
       </DialogContent>
     </Dialog>
   )
