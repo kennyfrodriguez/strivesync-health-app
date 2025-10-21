@@ -179,8 +179,7 @@ export default function HomePage() {
 
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Web Platform */}
-            <Link href="/demo/web">
-              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -222,19 +221,19 @@ export default function HomePage() {
                     <li>• Detailed health analytics</li>
                     <li>• Family account management</li>
                   </ul>
-                  <div className="mt-8 text-center">
-                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
-                      🔥 CLICK TO EXPLORE 🔥
-                      <span className="text-xl">→</span>
-                    </div>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/web">
+                        Explore Web Demo
+                        <span className="ml-2">→</span>
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-            </Link>
 
             {/* Mobile Platform */}
-            <Link href="/demo/mobile">
-              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -276,19 +275,19 @@ export default function HomePage() {
                     <li>• Emergency contacts</li>
                     <li>• Offline health records</li>
                   </ul>
-                  <div className="mt-8 text-center">
-                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
-                      🔥 CLICK TO EXPLORE 🔥
-                      <span className="text-xl">→</span>
-                    </div>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/mobile">
+                        Explore Mobile Demo
+                        <span className="ml-2">→</span>
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-            </Link>
 
             {/* Watch Platform */}
-            <Link href="/demo/watch">
-              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -327,15 +326,16 @@ export default function HomePage() {
                     <li>• Health alerts</li>
                     <li>• Quick AI consultations</li>
                   </ul>
-                  <div className="mt-8 text-center">
-                    <div className="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white text-lg font-bold rounded-xl shadow-lg hover:bg-red-700 transition-all">
-                      🔥 CLICK TO EXPLORE 🔥
-                      <span className="text-xl">→</span>
-                    </div>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/watch">
+                        Explore Watch Demo
+                        <span className="ml-2">→</span>
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
-            </Link>
           </div>
         </div>
       </section>
