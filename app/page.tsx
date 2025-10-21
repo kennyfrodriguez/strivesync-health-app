@@ -180,7 +180,7 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Web Platform */}
             <Link href="/demo/web">
-              <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -234,7 +234,7 @@ export default function HomePage() {
 
             {/* Mobile Platform */}
             <Link href="/demo/mobile">
-              <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -288,7 +288,7 @@ export default function HomePage() {
 
             {/* Watch Platform */}
             <Link href="/demo/watch">
-              <Card className="border-0 shadow-xl overflow-hidden cursor-pointer hover:shadow-2xl transition-all duration-300 group">
+              <Card className="border-0 shadow-xl cursor-pointer hover:shadow-2xl transition-all duration-300 group">
                 <CardHeader className="pb-0">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
