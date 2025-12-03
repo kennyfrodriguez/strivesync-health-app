@@ -36,6 +36,19 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Announcement Banner */}
+      <div className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-center gap-2 text-sm font-medium">
+            <Sparkles className="w-4 h-4 animate-pulse" />
+            <span>NEW: Get instant AI answers to 60+ health questions with one click!</span>
+            <Link href="/health-questions" className="underline hover:no-underline ml-2">
+              Try it now →
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto text-center max-w-4xl">
@@ -51,10 +64,16 @@ export default function HomePage() {
             our advanced AI assistant. Available on web, mobile, and smartwatch.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90" asChild>
+              <Link href="/health-questions">
+                <Brain className="w-5 h-5 mr-2" />
+                Ask AI Health Questions
+              </Link>
+            </Button>
             <Button size="lg" className="text-lg px-8" asChild>
               <Link href="/medical-advice">
                 <Activity className="w-5 h-5 mr-2" />
-                Start Health Check
+                Full AI Consultation
               </Link>
             </Button>
             <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent" asChild>
@@ -90,15 +109,34 @@ export default function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-2 border-primary/50 shadow-xl bg-gradient-to-br from-primary/5 to-blue-500/5">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                  <Brain className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <CardTitle>One-Click Health Questions</CardTitle>
+                  <Badge className="bg-gradient-to-r from-primary to-blue-600">NEW</Badge>
+                </div>
+                <CardDescription>
+                  Get instant answers to 60+ pre-formulated health questions covering all aspects of wellness, symptoms, medications, and emergency care.
+                </CardDescription>
+                <Button className="mt-4 w-full" asChild>
+                  <Link href="/health-questions">
+                    Try Now →
+                  </Link>
+                </Button>
+              </CardHeader>
+            </Card>
+
             <Card className="border-0 shadow-lg">
               <CardHeader>
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Brain className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle>AI Medical Advice</CardTitle>
+                <CardTitle>AI Medical Consultation</CardTitle>
                 <CardDescription>
-                  Get instant, personalized medical guidance powered by advanced AI algorithms trained on medical
-                  literature.
+                  Have detailed conversations with our AI for personalized medical guidance and in-depth symptom analysis.
                 </CardDescription>
               </CardHeader>
             </Card>
