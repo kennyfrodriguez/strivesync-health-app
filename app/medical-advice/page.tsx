@@ -9,7 +9,7 @@ import { Heart, Brain, AlertTriangle, Send, Loader2, ArrowLeft } from "lucide-re
 import Link from "next/link"
 
 export default function MedicalAdvicePage() {
-  const { messages, input, setInput, handleSubmit, isLoading, error } = useChat({
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error, append } = useChat({
     api: "/api/medical-advice",
   })
 
@@ -86,7 +86,7 @@ export default function MedicalAdvicePage() {
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
                 onClick={() =>
-                  setInput("I'm experiencing headaches and fatigue for the past few days. What could be causing this?")
+                  append({ role: "user", content: "I'm experiencing headaches and fatigue for the past few days. What could be causing this?" })
                 }
               >
                 <CardHeader className="pb-3">
@@ -97,7 +97,7 @@ export default function MedicalAdvicePage() {
 
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
-                onClick={() => setInput("Can you provide general wellness tips for maintaining good health?")}
+                onClick={() => append({ role: "user", content: "Can you provide general wellness tips for maintaining good health?" })}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Wellness Tips</CardTitle>
@@ -107,7 +107,7 @@ export default function MedicalAdvicePage() {
 
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
-                onClick={() => setInput("I need help understanding my medication side effects and interactions.")}
+                onClick={() => append({ role: "user", content: "I need help understanding my medication side effects and interactions." })}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Medication Info</CardTitle>
@@ -234,8 +234,9 @@ export default function MedicalAdvicePage() {
           <CardContent className="p-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <Textarea
+                name="prompt"
                 value={input ?? ""}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={handleInputChange}
                 placeholder="Describe your symptoms, ask about health conditions, or request wellness advice..."
                 className="min-h-[100px] resize-none"
                 disabled={isLoading}
