@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai"
-import { convertToModelMessages, streamText, type UIMessage, tool } from "ai"
+import { streamText, tool } from "ai"
 import { z } from "zod"
 
 export const maxDuration = 30
@@ -70,7 +70,7 @@ const tools = {
 } as const
 
 export async function POST(req: Request) {
-  const { messages }: { messages: UIMessage[] } = await req.json()
+  const { messages } = await req.json()
 
   const systemPrompt = `You are StriveSync, a professional medical AI assistant. You provide helpful medical information and guidance, but you are not a replacement for professional medical care.
 
@@ -87,17 +87,11 @@ Remember: You provide information and guidance, but users should always consult 
 
   const result = streamText({
     model: openai("gpt-4"),
-    messages: [{ role: "system", content: systemPrompt }, ...convertToModelMessages(messages)],
+    system: systemPrompt,
+    messages,
     tools,
     maxSteps: 3,
-    abortSignal: req.signal,
   })
 
-  return result.toUIMessageStreamResponse({
-    onFinish: async ({ isAborted }) => {
-      if (isAborted) {
-        console.log("Medical consultation aborted")
-      }
-    },
-  })
+  return result.toDataStreamResponse()
 }
