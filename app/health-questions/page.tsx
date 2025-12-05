@@ -2,7 +2,6 @@
 
 import type React from "react"
 import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +17,6 @@ import {
   Moon,
   Apple,
   Stethoscope,
-  Thermometer,
   Dumbbell,
   Baby,
   HeartPulse,
@@ -29,12 +27,12 @@ import {
 import Link from "next/link"
 
 export default function HealthQuestionsPage() {
-  const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/medical-advice" }),
+  const { messages, append, isLoading, error } = useChat({
+    api: "/api/medical-advice",
   })
 
   const askQuestion = (question: string) => {
-    sendMessage({ text: question })
+    append({ role: "user", content: question })
   }
 
   const healthCategories = [
@@ -301,93 +299,97 @@ export default function HealthQuestionsPage() {
                           : "bg-muted"
                       } rounded-lg p-4`}
                     >
-                      {message.parts.map((part, index) => {
-                        switch (part.type) {
-                          case "text":
-                            return (
-                              <div key={index} className="whitespace-pre-wrap leading-relaxed">
-                                {part.text}
+                      <div className="whitespace-pre-wrap leading-relaxed">
+                        {message.content}
+                      </div>
+                      {/* Tool invocations rendering */}
+                      {message.toolInvocations?.map((toolInvocation, index) => {
+                        if (toolInvocation.state !== "result") return null
+                        
+                        if (toolInvocation.toolName === "medicalAssessment") {
+                          const result = toolInvocation.result as {
+                            urgencyLevel: string
+                            recommendations: string[]
+                            followUpAdvice: string
+                          }
+                          return (
+                            <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
+                              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                <Stethoscope className="w-4 h-4" />
+                                Medical Assessment
+                              </h4>
+                              <div className="space-y-2 text-sm">
+                                <div>
+                                  <strong>Urgency Level:</strong>
+                                  <Badge
+                                    variant={
+                                      result.urgencyLevel === "high"
+                                        ? "destructive"
+                                        : result.urgencyLevel === "medium"
+                                          ? "secondary"
+                                          : "outline"
+                                    }
+                                    className="ml-2"
+                                  >
+                                    {result.urgencyLevel}
+                                  </Badge>
+                                </div>
+                                <div>
+                                  <strong>Recommendations:</strong>
+                                  <ul className="list-disc list-inside mt-1">
+                                    {result.recommendations.map((rec: string, i: number) => (
+                                      <li key={i}>{rec}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                                <div>
+                                  <strong>Follow-up:</strong> {result.followUpAdvice}
+                                </div>
                               </div>
-                            )
-
-                          case "tool-medicalAssessment":
-                            if (part.state === "output-available") {
-                              return (
-                                <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
-                                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                    <Stethoscope className="w-4 h-4" />
-                                    Medical Assessment
-                                  </h4>
-                                  <div className="space-y-2 text-sm">
-                                    <div>
-                                      <strong>Urgency Level:</strong>
-                                      <Badge
-                                        variant={
-                                          part.output.urgencyLevel === "high"
-                                            ? "destructive"
-                                            : part.output.urgencyLevel === "medium"
-                                              ? "secondary"
-                                              : "outline"
-                                        }
-                                        className="ml-2"
-                                      >
-                                        {part.output.urgencyLevel}
-                                      </Badge>
-                                    </div>
-                                    <div>
-                                      <strong>Recommendations:</strong>
-                                      <ul className="list-disc list-inside mt-1">
-                                        {part.output.recommendations.map((rec: string, i: number) => (
-                                          <li key={i}>{rec}</li>
-                                        ))}
-                                      </ul>
-                                    </div>
-                                    <div>
-                                      <strong>Follow-up:</strong> {part.output.followUpAdvice}
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-                            }
-                            break
-
-                          case "tool-emergencyCheck":
-                            if (part.state === "output-available") {
-                              return (
-                                <div
-                                  key={index}
-                                  className={`mt-3 p-3 rounded border ${
-                                    part.output.isEmergency 
-                                      ? "bg-destructive/10 border-destructive" 
-                                      : "bg-background/10"
-                                  }`}
-                                >
-                                  <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                    {part.output.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
-                                    Emergency Assessment
-                                  </h4>
-                                  <div className="space-y-2 text-sm">
-                                    <div>
-                                      <strong>Urgency Score:</strong> {part.output.urgencyScore}/10
-                                    </div>
-                                    {part.output.isEmergency && (
-                                      <div className="text-destructive font-semibold">
-                                        ⚠️ {part.output.emergencyAdvice}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              )
-                            }
-                            break
+                            </div>
+                          )
                         }
+                        
+                        if (toolInvocation.toolName === "emergencyCheck") {
+                          const result = toolInvocation.result as {
+                            isEmergency: boolean
+                            emergencyAdvice: string | null
+                            urgencyScore: number
+                          }
+                          return (
+                            <div
+                              key={index}
+                              className={`mt-3 p-3 rounded border ${
+                                result.isEmergency 
+                                  ? "bg-destructive/10 border-destructive" 
+                                  : "bg-background/10"
+                              }`}
+                            >
+                              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                                {result.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
+                                Emergency Assessment
+                              </h4>
+                              <div className="space-y-2 text-sm">
+                                <div>
+                                  <strong>Urgency Score:</strong> {result.urgencyScore}/10
+                                </div>
+                                {result.isEmergency && (
+                                  <div className="text-destructive font-semibold">
+                                    ⚠️ {result.emergencyAdvice}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )
+                        }
+                        
                         return null
                       })}
                     </div>
                   </div>
                 ))}
 
-                {status === "in_progress" && (
+                {isLoading && (
                   <div className="flex justify-start">
                     <div className="bg-muted rounded-lg p-4 flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -423,7 +425,7 @@ export default function HealthQuestionsPage() {
                       <Button
                         key={questionIndex}
                         onClick={() => askQuestion(question)}
-                        disabled={status === "in_progress"}
+                        disabled={isLoading}
                         variant="outline"
                         className="h-auto py-4 px-4 text-left justify-start whitespace-normal hover:shadow-md transition-all hover:border-primary/50"
                       >

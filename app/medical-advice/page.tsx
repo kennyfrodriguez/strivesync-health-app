@@ -3,27 +3,22 @@
 import type React from "react"
 
 import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport } from "ai"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Heart, Brain, AlertTriangle, Send, Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { useState } from "react"
 
 export default function MedicalAdvicePage() {
-  const [input, setInput] = useState("")
-
-  const { messages, sendMessage, status } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/medical-advice" }),
+  const { messages, input, setInput, handleSubmit, isLoading, error } = useChat({
+    api: "/api/medical-advice",
   })
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input.trim() && status !== "in_progress") {
-      sendMessage({ text: input })
-      setInput("")
+    if (input.trim() && !isLoading) {
+      handleSubmit(e)
     }
   }
 
@@ -132,6 +127,19 @@ export default function MedicalAdvicePage() {
           </div>
         )}
 
+        {/* Error Display */}
+        {error && (
+          <Card className="mb-6 border-destructive bg-destructive/10">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 text-destructive">
+                <AlertTriangle className="w-5 h-5" />
+                <span className="font-semibold">Error:</span>
+                <span>{error.message}</span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Chat Messages */}
         <div className="space-y-4 mb-6">
           {messages.map((message) => (
@@ -139,84 +147,88 @@ export default function MedicalAdvicePage() {
               <div
                 className={`max-w-[80%] ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"} rounded-lg p-4`}
               >
-                {message.parts.map((part, index) => {
-                  switch (part.type) {
-                    case "text":
-                      return (
-                        <div key={index} className="whitespace-pre-wrap">
-                          {part.text}
+                <div className="whitespace-pre-wrap">
+                  {message.content}
+                </div>
+                {/* Tool invocations rendering */}
+                {message.toolInvocations?.map((toolInvocation, index) => {
+                  if (toolInvocation.state !== "result") return null
+                  
+                  if (toolInvocation.toolName === "medicalAssessment") {
+                    const result = toolInvocation.result as {
+                      urgencyLevel: string
+                      recommendations: string[]
+                      followUpAdvice: string
+                    }
+                    return (
+                      <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
+                        <h4 className="font-semibold mb-2">Medical Assessment</h4>
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <strong>Urgency Level:</strong>
+                            <Badge
+                              variant={
+                                result.urgencyLevel === "high"
+                                  ? "destructive"
+                                  : result.urgencyLevel === "medium"
+                                    ? "secondary"
+                                    : "outline"
+                              }
+                              className="ml-2"
+                            >
+                              {result.urgencyLevel}
+                            </Badge>
+                          </div>
+                          <div>
+                            <strong>Recommendations:</strong>
+                            <ul className="list-disc list-inside mt-1">
+                              {result.recommendations.map((rec: string, i: number) => (
+                                <li key={i}>{rec}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <strong>Follow-up:</strong> {result.followUpAdvice}
+                          </div>
                         </div>
-                      )
-
-                    case "tool-medicalAssessment":
-                      if (part.state === "output-available") {
-                        return (
-                          <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
-                            <h4 className="font-semibold mb-2">Medical Assessment</h4>
-                            <div className="space-y-2 text-sm">
-                              <div>
-                                <strong>Urgency Level:</strong>
-                                <Badge
-                                  variant={
-                                    part.output.urgencyLevel === "high"
-                                      ? "destructive"
-                                      : part.output.urgencyLevel === "medium"
-                                        ? "secondary"
-                                        : "outline"
-                                  }
-                                  className="ml-2"
-                                >
-                                  {part.output.urgencyLevel}
-                                </Badge>
-                              </div>
-                              <div>
-                                <strong>Recommendations:</strong>
-                                <ul className="list-disc list-inside mt-1">
-                                  {part.output.recommendations.map((rec: string, i: number) => (
-                                    <li key={i}>{rec}</li>
-                                  ))}
-                                </ul>
-                              </div>
-                              <div>
-                                <strong>Follow-up:</strong> {part.output.followUpAdvice}
-                              </div>
-                            </div>
-                          </div>
-                        )
-                      }
-                      break
-
-                    case "tool-emergencyCheck":
-                      if (part.state === "output-available") {
-                        return (
-                          <div
-                            key={index}
-                            className={`mt-3 p-3 rounded border ${part.output.isEmergency ? "bg-destructive/10 border-destructive" : "bg-background/10"}`}
-                          >
-                            <h4 className="font-semibold mb-2 flex items-center gap-2">
-                              {part.output.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
-                              Emergency Assessment
-                            </h4>
-                            <div className="space-y-2 text-sm">
-                              <div>
-                                <strong>Urgency Score:</strong> {part.output.urgencyScore}/10
-                              </div>
-                              {part.output.isEmergency && (
-                                <div className="text-destructive font-semibold">⚠️ {part.output.emergencyAdvice}</div>
-                              )}
-                            </div>
-                          </div>
-                        )
-                      }
-                      break
+                      </div>
+                    )
                   }
+                  
+                  if (toolInvocation.toolName === "emergencyCheck") {
+                    const result = toolInvocation.result as {
+                      isEmergency: boolean
+                      emergencyAdvice: string | null
+                      urgencyScore: number
+                    }
+                    return (
+                      <div
+                        key={index}
+                        className={`mt-3 p-3 rounded border ${result.isEmergency ? "bg-destructive/10 border-destructive" : "bg-background/10"}`}
+                      >
+                        <h4 className="font-semibold mb-2 flex items-center gap-2">
+                          {result.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
+                          Emergency Assessment
+                        </h4>
+                        <div className="space-y-2 text-sm">
+                          <div>
+                            <strong>Urgency Score:</strong> {result.urgencyScore}/10
+                          </div>
+                          {result.isEmergency && (
+                            <div className="text-destructive font-semibold">⚠️ {result.emergencyAdvice}</div>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  }
+                  
                   return null
                 })}
               </div>
             </div>
           ))}
 
-          {status === "in_progress" && (
+          {isLoading && (
             <div className="flex justify-start">
               <div className="bg-muted rounded-lg p-4 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -229,13 +241,13 @@ export default function MedicalAdvicePage() {
         {/* Input Form */}
         <Card className="border-0 shadow-lg">
           <CardContent className="p-4">
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               <Textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Describe your symptoms, ask about health conditions, or request wellness advice..."
                 className="min-h-[100px] resize-none"
-                disabled={status === "in_progress"}
+                disabled={isLoading}
               />
               <div className="flex justify-between items-center">
                 <p className="text-xs text-muted-foreground">
@@ -243,10 +255,10 @@ export default function MedicalAdvicePage() {
                 </p>
                 <Button
                   type="submit"
-                  disabled={!input.trim() || status === "in_progress"}
+                  disabled={!input.trim() || isLoading}
                   className="flex items-center gap-2"
                 >
-                  {status === "in_progress" ? (
+                  {isLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <Send className="w-4 h-4" />
