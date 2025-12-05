@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -14,13 +12,6 @@ export default function MedicalAdvicePage() {
   const { messages, input, setInput, handleSubmit, isLoading, error } = useChat({
     api: "/api/medical-advice",
   })
-
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (input?.trim() && !isLoading) {
-      handleSubmit(e)
-    }
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -241,9 +232,9 @@ export default function MedicalAdvicePage() {
         {/* Input Form */}
         <Card className="border-0 shadow-lg">
           <CardContent className="p-4">
-            <form onSubmit={onSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <Textarea
-                value={input}
+                value={input ?? ""}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Describe your symptoms, ask about health conditions, or request wellness advice..."
                 className="min-h-[100px] resize-none"
@@ -255,7 +246,7 @@ export default function MedicalAdvicePage() {
                 </p>
                 <Button
                   type="submit"
-                  disabled={!input?.trim() || isLoading}
+                  disabled={!(input ?? "").trim() || isLoading}
                   className="flex items-center gap-2"
                 >
                   {isLoading ? (
