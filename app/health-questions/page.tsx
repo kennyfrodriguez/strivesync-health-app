@@ -224,17 +224,43 @@ export default function HealthQuestionsPage() {
             All features from the home page, now just one click away.
           </p>
           
-          {/* Disclaimer */}
-          <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20 text-left">
+          {/* Enhanced Legal Disclaimer */}
+          <Card className="border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950/20 text-left">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-amber-600" />
-                <CardTitle className="text-amber-800 dark:text-amber-200 text-lg">Medical Disclaimer</CardTitle>
+                <AlertTriangle className="w-6 h-6 text-red-600" />
+                <CardTitle className="text-red-800 dark:text-red-200 text-lg font-bold">⚠️ CRITICAL MEDICAL DISCLAIMER</CardTitle>
               </div>
             </CardHeader>
-            <CardContent className="text-sm text-amber-700 dark:text-amber-300">
-              This AI provides general health information only. Not a substitute for professional medical advice. 
-              Always consult qualified healthcare professionals. <strong>Call 911 for emergencies.</strong>
+            <CardContent className="text-sm text-red-800 dark:text-red-300 space-y-3">
+              <p className="font-bold text-base">
+                THIS IS NOT MEDICAL ADVICE. FOR INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY.
+              </p>
+              <div className="space-y-2">
+                <p>
+                  • <strong>NOT A SUBSTITUTE:</strong> This AI tool is NOT a substitute for professional medical advice, diagnosis, or treatment. 
+                  Never disregard or delay seeking professional medical advice because of information provided by this AI.
+                </p>
+                <p>
+                  • <strong>NO DOCTOR-PATIENT RELATIONSHIP:</strong> Use of this service does not create a doctor-patient relationship. 
+                  AI responses are not reviewed by licensed medical professionals.
+                </p>
+                <p>
+                  • <strong>EMERGENCIES:</strong> If you are experiencing a medical emergency, <strong className="text-lg">CALL 911 IMMEDIATELY</strong> or 
+                  go to the nearest emergency room. Do not rely on this AI for emergency medical situations.
+                </p>
+                <p>
+                  • <strong>ACCURACY NOT GUARANTEED:</strong> AI may provide inaccurate, incomplete, or outdated information. 
+                  Always verify with qualified healthcare providers.
+                </p>
+                <p>
+                  • <strong>NO LIABILITY:</strong> By using this service, you acknowledge that the creators, developers, and operators 
+                  assume no liability for any consequences arising from the use of this AI tool.
+                </p>
+              </div>
+              <p className="font-bold text-center text-base pt-2 border-t border-red-300">
+                ALWAYS CONSULT WITH QUALIFIED HEALTHCARE PROFESSIONALS FOR MEDICAL DECISIONS
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -258,6 +284,11 @@ export default function HealthQuestionsPage() {
                 <Brain className="w-5 h-5 text-primary" />
                 AI Health Assistant Response
               </CardTitle>
+              <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
+                <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
+                  ⚠️ REMINDER: This is AI-generated information only, NOT medical advice. Always consult healthcare professionals for actual medical decisions. Call 911 for emergencies.
+                </p>
+              </div>
             </CardHeader>
             <CardContent className="max-h-[500px] overflow-y-auto">
               <div className="space-y-4">

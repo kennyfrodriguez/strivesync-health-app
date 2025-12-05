@@ -57,18 +57,38 @@ export default function MedicalAdvicePage() {
       </header>
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Disclaimer */}
-        <Card className="mb-6 border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/20">
+        {/* Enhanced Legal Disclaimer */}
+        <Card className="mb-6 border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950/20">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-amber-600" />
-              <CardTitle className="text-amber-800 dark:text-amber-200">Important Medical Disclaimer</CardTitle>
+              <AlertTriangle className="w-6 h-6 text-red-600" />
+              <CardTitle className="text-red-800 dark:text-red-200 font-bold">⚠️ CRITICAL MEDICAL DISCLAIMER</CardTitle>
             </div>
           </CardHeader>
-          <CardContent className="text-sm text-amber-700 dark:text-amber-300">
-            This AI assistant provides general health information and guidance only. It is not a substitute for
-            professional medical advice, diagnosis, or treatment. Always consult with qualified healthcare professionals
-            for medical decisions. In case of emergency, call 911 immediately.
+          <CardContent className="text-sm text-red-800 dark:text-red-300 space-y-3">
+            <p className="font-bold">
+              THIS IS NOT MEDICAL ADVICE. FOR INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY.
+            </p>
+            <div className="space-y-2">
+              <p>
+                • <strong>NOT A SUBSTITUTE:</strong> This AI tool is NOT a substitute for professional medical advice, diagnosis, or treatment.
+              </p>
+              <p>
+                • <strong>NO DOCTOR-PATIENT RELATIONSHIP:</strong> Use of this service does not create a doctor-patient relationship.
+              </p>
+              <p>
+                • <strong>EMERGENCIES:</strong> If experiencing a medical emergency, <strong className="text-base">CALL 911 IMMEDIATELY</strong>. Do not rely on this AI for emergencies.
+              </p>
+              <p>
+                • <strong>ACCURACY NOT GUARANTEED:</strong> AI may provide inaccurate or incomplete information. Always verify with healthcare providers.
+              </p>
+              <p>
+                • <strong>NO LIABILITY:</strong> Creators assume no liability for consequences arising from use of this AI tool.
+              </p>
+            </div>
+            <p className="font-bold text-center pt-2 border-t border-red-300">
+              ALWAYS CONSULT WITH QUALIFIED HEALTHCARE PROFESSIONALS
+            </p>
           </CardContent>
         </Card>
 

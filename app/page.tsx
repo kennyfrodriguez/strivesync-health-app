@@ -57,11 +57,11 @@ export default function HomePage() {
             AI-Powered Healthcare
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold text-balance mb-6">
-            Your Personal <span className="text-primary">AI Health</span> Companion
+            Your Personal <span className="text-primary">AI Health</span> Information Assistant
           </h1>
           <p className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
-            Get personalized medical advice, monitor your health metrics, and access reliable medical information with
-            our advanced AI assistant. Available on web, mobile, and smartwatch.
+            Get general health information, wellness guidance, and educational content with our AI assistant. 
+            Available on web, mobile, and smartwatch. <strong className="text-red-600">Not a substitute for professional medical care.</strong>
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90" asChild>
@@ -115,12 +115,12 @@ export default function HomePage() {
                   <Brain className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <div className="flex items-center gap-2 mb-2">
-                  <CardTitle>One-Click Health Questions</CardTitle>
-                  <Badge className="bg-gradient-to-r from-primary to-blue-600">NEW</Badge>
-                </div>
-                <CardDescription>
-                  Get instant answers to 60+ pre-formulated health questions covering all aspects of wellness, symptoms, medications, and emergency care.
-                </CardDescription>
+                <CardTitle>One-Click Health Questions</CardTitle>
+                <Badge className="bg-gradient-to-r from-primary to-blue-600">NEW</Badge>
+              </div>
+              <CardDescription>
+                Get instant general health information from 60+ pre-formulated questions about wellness, fitness, and health topics. Educational purposes only - not medical advice.
+              </CardDescription>
                 <Button className="mt-4 w-full" asChild>
                   <Link href="/health-questions">
                     Try Now →
@@ -134,9 +134,9 @@ export default function HomePage() {
                 <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Brain className="w-6 h-6 text-primary" />
                 </div>
-                <CardTitle>AI Medical Consultation</CardTitle>
+                <CardTitle>AI Health Information Chat</CardTitle>
                 <CardDescription>
-                  Have detailed conversations with our AI for personalized medical guidance and in-depth symptom analysis.
+                  Have detailed conversations with our AI for general health information and educational wellness guidance. Not medical advice.
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -780,8 +780,18 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 StriveSync. All rights reserved. This is a demo application.</p>
+          <div className="border-t mt-8 pt-8 text-center">
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 max-w-4xl mx-auto">
+              <p className="text-sm text-red-800 dark:text-red-300 font-semibold mb-2">
+                ⚠️ MEDICAL DISCLAIMER
+              </p>
+              <p className="text-xs text-red-700 dark:text-red-400">
+                This application provides general health information for educational purposes only. It is NOT medical advice and does NOT create a doctor-patient relationship. 
+                Never disregard professional medical advice or delay seeking it because of information from this AI. For emergencies, call 911. 
+                The creators assume no liability for any consequences from use of this service.
+              </p>
+            </div>
+            <p className="text-muted-foreground">&copy; 2024 StriveSync. All rights reserved. This is a demonstration application for educational purposes only.</p>
           </div>
         </div>
       </footer>
