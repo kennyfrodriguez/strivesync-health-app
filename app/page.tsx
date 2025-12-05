@@ -1,541 +1,800 @@
-"use client"
-
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { 
-  Heart, 
-  Brain, 
-  Dumbbell, 
-  Flame,
-  Moon,
-  Apple,
-  Activity,
-  Zap,
-  Target,
-  TrendingUp,
-  Sparkles,
-  Send,
-  ArrowRight,
-  Play,
-  ChevronRight,
-  User,
-  Loader2
-} from "lucide-react"
+import { Heart, Shield, Brain, Smartphone, Watch, Monitor, Activity, Users, Star, Key, Sparkles, Zap, Eye, Palette, Layers } from "lucide-react"
 import Link from "next/link"
 
 export default function HomePage() {
-  const [chatInput, setChatInput] = useState("")
-  const [chatMessages, setChatMessages] = useState<{role: string, content: string}[]>([
-    { role: "assistant", content: "Hey! I'm Strive, your AI fitness companion. 💪 Ask me anything about workouts, nutrition, calories, or mental wellness. I'm here to help you crush your goals!" }
-  ])
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleChat = async () => {
-    if (!chatInput.trim() || isLoading) return
-    
-    const userMessage = chatInput.trim()
-    setChatMessages(prev => [...prev, { role: "user", content: userMessage }])
-    setChatInput("")
-    setIsLoading(true)
-
-    try {
-      const res = await fetch("/api/medical-advice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: [{ role: "user", content: userMessage }],
-        }),
-      })
-      const data = await res.json()
-      if (res.ok) {
-        setChatMessages(prev => [...prev, { role: "assistant", content: data.content }])
-      }
-    } catch {
-      // Silently fail
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const quickPrompts = [
-    "How many calories should I eat to lose weight?",
-    "Give me a quick 15-min home workout",
-    "What should I eat after a workout?",
-    "Help me stay motivated today"
-  ]
-
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white overflow-hidden">
-      {/* Ambient Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[150px]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-500/5 rounded-full blur-[200px]" />
-      </div>
-
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="relative z-50 border-b border-white/5 backdrop-blur-xl bg-black/20">
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-white" />
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0a0a0f] flex items-center justify-center">
-                  <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
-                </div>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-primary-foreground" />
               </div>
-              <div>
-                <span className="text-xl font-bold tracking-tight">Strive</span>
-                <p className="text-xs text-white/50">AI Fitness Coach</p>
-              </div>
+              <span className="text-xl font-bold text-foreground">StriveSync</span>
             </div>
-            <nav className="hidden md:flex items-center gap-8">
-              <Link href="/health-questions" className="text-white/60 hover:text-white transition-colors text-sm font-medium">
-                Workouts
+            <nav className="hidden md:flex items-center gap-6">
+              <Link href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+                Features
               </Link>
-              <Link href="/health-questions" className="text-white/60 hover:text-white transition-colors text-sm font-medium">
-                Nutrition
+              <Link href="#platforms" className="text-muted-foreground hover:text-foreground transition-colors">
+                Platforms
               </Link>
-              <Link href="/dashboard" className="text-white/60 hover:text-white transition-colors text-sm font-medium">
-                Dashboard
+              <Link href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
+                About
               </Link>
-              <Button size="sm" className="bg-white text-black hover:bg-white/90 font-semibold">
-                Get Started
+              <Button variant="outline" size="sm">
+                Sign In
               </Button>
+              <Button size="sm">Get Started</Button>
             </nav>
           </div>
         </div>
       </header>
 
+      {/* Announcement Banner */}
+      <div className="bg-gradient-to-r from-primary via-blue-600 to-purple-600 text-white">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-center gap-2 text-sm font-medium">
+            <Sparkles className="w-4 h-4 animate-pulse" />
+            <span>NEW: Get instant AI answers to 60+ health questions with one click!</span>
+            <Link href="/health-questions" className="underline hover:no-underline ml-2">
+              Try it now →
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center py-20 px-4">
+      <section className="py-20 px-4">
+        <div className="container mx-auto text-center max-w-4xl">
+          <Badge variant="secondary" className="mb-4">
+            <Brain className="w-4 h-4 mr-2" />
+            AI-Powered Healthcare
+          </Badge>
+          <h1 className="text-4xl md:text-6xl font-bold text-balance mb-6">
+            Your Personal <span className="text-primary">AI Health</span> Information Assistant
+          </h1>
+          <p className="text-xl text-muted-foreground text-pretty mb-8 max-w-2xl mx-auto">
+            Get general health information, wellness guidance, and educational content with our AI assistant. 
+            Available on web, mobile, and smartwatch. <strong className="text-red-600">Not a substitute for professional medical care.</strong>
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90" asChild>
+              <Link href="/health-questions">
+                <Brain className="w-5 h-5 mr-2" />
+                Ask AI Health Questions
+              </Link>
+            </Button>
+            <Button size="lg" className="text-lg px-8" asChild>
+              <Link href="/medical-advice">
+                <Activity className="w-5 h-5 mr-2" />
+                Full AI Consultation
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent" asChild>
+              <Link href="/demo/web">
+                <Monitor className="w-5 h-5 mr-2" />
+                View Interactive Demo
+              </Link>
+            </Button>
+          </div>
+          
+          {/* AI Integration CTA */}
+          <div className="mt-8 flex justify-center">
+            <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 shadow-lg" asChild>
+              <Link href="/ai-integration">
+                <Key className="w-4 h-4 mr-2" />
+                Import Your AI Tokens
+                <Sparkles className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Content */}
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 px-4 py-2 rounded-full">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-sm text-white/70">Your AI fitness friend is online</span>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Comprehensive Health Management</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Advanced AI technology meets healthcare to provide you with personalized, reliable medical guidance and
+              health monitoring.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-2 border-primary/50 shadow-xl bg-gradient-to-br from-primary/5 to-blue-500/5">
+              <CardHeader>
+                <div className="w-12 h-12 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center mb-4">
+                  <Brain className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                <CardTitle>One-Click Health Questions</CardTitle>
+                <Badge className="bg-gradient-to-r from-primary to-blue-600">NEW</Badge>
               </div>
-
-              <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tight">
-                Meet{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-red-500 to-pink-500">
-                  Strive
-                </span>
-                <br />
-                <span className="text-white/90">Your Body's</span>
-                <br />
-                <span className="text-white/70">Best Friend</span>
-              </h1>
-
-              <p className="text-xl text-white/60 max-w-lg leading-relaxed">
-                Like having a personal trainer, nutritionist, and wellness coach in your pocket. 
-                Strive understands your goals and guides you with real-time, personalized advice.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 h-14 text-lg" asChild>
+              <CardDescription>
+                Get instant general health information from 60+ pre-formulated questions about wellness, fitness, and health topics. Educational purposes only - not medical advice.
+              </CardDescription>
+                <Button className="mt-4 w-full" asChild>
                   <Link href="/health-questions">
-                    <Play className="w-5 h-5 mr-2" />
-                    Start Training
+                    Try Now →
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold px-8 h-14 text-lg" asChild>
-                  <Link href="/medical-advice">
-                    <Brain className="w-5 h-5 mr-2" />
-                    Chat with Strive
-                  </Link>
-                </Button>
-              </div>
-
-              {/* Stats */}
-              <div className="flex gap-12 pt-8 border-t border-white/10">
-                <div>
-                  <div className="text-3xl font-bold text-orange-400">50K+</div>
-                  <div className="text-sm text-white/50">Active Users</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-orange-400">2M+</div>
-                  <div className="text-sm text-white/50">Workouts Created</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-orange-400">4.9★</div>
-                  <div className="text-sm text-white/50">User Rating</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Interactive Chat Preview */}
-            <div className="relative">
-              {/* Decorative Ring */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-[500px] h-[500px] rounded-full border border-white/5" />
-                <div className="absolute w-[400px] h-[400px] rounded-full border border-orange-500/20" />
-                <div className="absolute w-[300px] h-[300px] rounded-full border border-red-500/20" />
-              </div>
-
-              {/* Chat Interface */}
-              <div className="relative bg-gradient-to-b from-white/10 to-white/5 backdrop-blur-xl rounded-3xl border border-white/10 p-6 shadow-2xl">
-                {/* Chat Header */}
-                <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                    <Zap className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="font-semibold flex items-center gap-2">
-                      Strive
-                      <Badge className="bg-green-500/20 text-green-400 text-xs">Online</Badge>
-                    </div>
-                    <div className="text-xs text-white/50">Your AI Fitness Coach</div>
-                  </div>
-                </div>
-
-                {/* Messages */}
-                <div className="space-y-4 h-[300px] overflow-y-auto mb-4 pr-2">
-                  {chatMessages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                      <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                        msg.role === "user" 
-                          ? "bg-gradient-to-r from-orange-500 to-red-500 text-white" 
-                          : "bg-white/10 text-white/90"
-                      }`}>
-                        <p className="text-sm leading-relaxed">{msg.content}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-white/10 rounded-2xl px-4 py-3">
-                        <Loader2 className="w-5 h-5 animate-spin text-orange-400" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Quick Prompts */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {quickPrompts.map((prompt, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setChatInput(prompt)}
-                      className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 rounded-full px-3 py-1.5 text-white/70 hover:text-white transition-colors"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Input */}
-                <div className="flex gap-2">
-                  <Input
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleChat()}
-                    placeholder="Ask Strive anything..."
-                    className="bg-white/5 border-white/10 text-white placeholder:text-white/30 focus:ring-orange-500"
-                  />
-                  <Button 
-                    onClick={handleChat}
-                    disabled={isLoading}
-                    className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl p-4 shadow-xl animate-float">
-                <Apple className="w-6 h-6 text-white mb-1" />
-                <div className="text-xs font-semibold">1,850 cal</div>
-                <div className="text-[10px] text-white/70">Daily Goal</div>
-              </div>
-
-              <div className="absolute -bottom-4 -left-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-4 shadow-xl animate-float-delayed">
-                <Moon className="w-6 h-6 text-white mb-1" />
-                <div className="text-xs font-semibold">7.5 hrs</div>
-                <div className="text-[10px] text-white/70">Sleep Score</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Body Focus Section */}
-      <section className="relative py-24 px-4">
-        <div className="container mx-auto">
-          <div className="text-center mb-16">
-            <Badge className="bg-white/5 text-white/70 border-white/10 mb-4">
-              <Target className="w-3 h-3 mr-1" />
-              Personalized Training
-            </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Train Every Part of{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">You</span>
-            </h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Strive understands your body and mind. Get targeted advice for any muscle group, dietary need, or mental challenge.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { icon: Dumbbell, label: "Strength", color: "from-orange-500 to-red-500", desc: "Build muscle & power" },
-              { icon: Flame, label: "Fat Burn", color: "from-red-500 to-pink-500", desc: "Torch calories fast" },
-              { icon: Heart, label: "Cardio", color: "from-pink-500 to-purple-500", desc: "Heart health focus" },
-              { icon: Brain, label: "Mind", color: "from-purple-500 to-indigo-500", desc: "Mental strength" },
-              { icon: Apple, label: "Nutrition", color: "from-green-500 to-emerald-500", desc: "Fuel your body" },
-              { icon: Moon, label: "Recovery", color: "from-blue-500 to-cyan-500", desc: "Rest & restore" },
-            ].map((item, i) => (
-              <Card key={i} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all group cursor-pointer">
-                <CardContent className="p-6 text-center">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                    <item.icon className="w-7 h-7 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-white mb-1">{item.label}</h3>
-                  <p className="text-xs text-white/50">{item.desc}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="relative py-24 px-4">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Calorie Tracking */}
-            <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/5 border-green-500/20 overflow-hidden group hover:border-green-500/40 transition-colors">
-              <CardContent className="p-8">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <Badge className="bg-green-500/20 text-green-400 mb-3">Nutrition AI</Badge>
-                    <h3 className="text-2xl font-bold text-white mb-2">Smart Calorie Tracking</h3>
-                    <p className="text-white/60">Strive calculates your perfect calorie intake based on your goals, activity level, and body composition.</p>
-                  </div>
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
-                    <Apple className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                
-                {/* Calorie Ring Visualization */}
-                <div className="flex items-center gap-8 mt-8">
-                  <div className="relative w-32 h-32">
-                    <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                      <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.1)" strokeWidth="8" fill="none" />
-                      <circle cx="50" cy="50" r="40" stroke="url(#gradient)" strokeWidth="8" fill="none" strokeDasharray="251.2" strokeDashoffset="62.8" strokeLinecap="round" />
-                      <defs>
-                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#22c55e" />
-                          <stop offset="100%" stopColor="#10b981" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    <div className="absolute inset-0 flex flex-col items-center justify-center">
-                      <span className="text-2xl font-bold text-white">1,420</span>
-                      <span className="text-xs text-white/50">of 2,000</span>
-                    </div>
-                  </div>
-                  <div className="space-y-3 flex-1">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-white/70">Protein</span>
-                      <span className="text-sm font-medium text-white">85g / 120g</span>
-                    </div>
-                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full w-[70%] bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full" />
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-white/70">Carbs</span>
-                      <span className="text-sm font-medium text-white">180g / 250g</span>
-                    </div>
-                    <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full w-[72%] bg-gradient-to-r from-orange-500 to-yellow-500 rounded-full" />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
+              </CardHeader>
             </Card>
 
-            {/* Mental Strength */}
-            <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/5 border-purple-500/20 overflow-hidden group hover:border-purple-500/40 transition-colors">
-              <CardContent className="p-8">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <Badge className="bg-purple-500/20 text-purple-400 mb-3">Mindset Coach</Badge>
-                    <h3 className="text-2xl font-bold text-white mb-2">Mental Strength Training</h3>
-                    <p className="text-white/60">Your mind is your strongest muscle. Strive helps you build resilience, focus, and motivation.</p>
-                  </div>
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                    <Brain className="w-8 h-8 text-white" />
-                  </div>
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Brain className="w-6 h-6 text-primary" />
                 </div>
-                
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  {[
-                    { label: "Focus Score", value: "92%", icon: Target },
-                    { label: "Motivation", value: "High", icon: TrendingUp },
-                    { label: "Stress Level", value: "Low", icon: Activity },
-                    { label: "Mindfulness", value: "45 min", icon: Moon },
-                  ].map((stat, i) => (
-                    <div key={i} className="bg-white/5 rounded-xl p-4">
-                      <stat.icon className="w-5 h-5 text-purple-400 mb-2" />
-                      <div className="text-lg font-bold text-white">{stat.value}</div>
-                      <div className="text-xs text-white/50">{stat.label}</div>
-                    </div>
-                  ))}
+                <CardTitle>AI Health Information Chat</CardTitle>
+                <CardDescription>
+                  Have detailed conversations with our AI for general health information and educational wellness guidance. Not medical advice.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Activity className="w-6 h-6 text-primary" />
                 </div>
-              </CardContent>
+                <CardTitle>Health Monitoring</CardTitle>
+                <CardDescription>
+                  Track vital signs, symptoms, and health metrics with intelligent analysis and trend detection.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-primary" />
+                </div>
+                <CardTitle>Secure & Private</CardTitle>
+                <CardDescription>
+                  Your health data is encrypted and protected with enterprise-grade security and HIPAA compliance.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Users className="w-6 h-6 text-primary" />
+                </div>
+                <CardTitle>Family Care</CardTitle>
+                <CardDescription>
+                  Manage health information for your entire family with shared access and coordinated care plans.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Star className="w-6 h-6 text-primary" />
+                </div>
+                <CardTitle>Expert Verified</CardTitle>
+                <CardDescription>
+                  All AI recommendations are validated by licensed healthcare professionals and medical experts.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+                  <Heart className="w-6 h-6 text-primary" />
+                </div>
+                <CardTitle>24/7 Support</CardTitle>
+                <CardDescription>
+                  Round-the-clock access to health guidance and emergency support when you need it most.
+                </CardDescription>
+              </CardHeader>
             </Card>
           </div>
         </div>
       </section>
 
-      {/* Workout Preview */}
-      <section className="relative py-24 px-4 bg-gradient-to-b from-transparent via-orange-500/5 to-transparent">
+      {/* Platform Demos Section */}
+      <section id="platforms" className="py-20 px-4">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Workouts That{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">Adapt to You</span>
-            </h2>
-            <p className="text-white/50 text-lg max-w-2xl mx-auto">
-              Whether you have 10 minutes or an hour, Strive creates the perfect workout for your schedule and energy level.
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Available Everywhere You Are</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Access your health companion on any device - web, mobile, or smartwatch. Seamless synchronization keeps
+              your data up-to-date across all platforms.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              { title: "Quick Burn", duration: "15 min", calories: "180", level: "Beginner", color: "from-orange-500 to-red-500" },
-              { title: "Full Body Power", duration: "45 min", calories: "450", level: "Intermediate", color: "from-red-500 to-pink-500" },
-              { title: "HIIT Extreme", duration: "30 min", calories: "380", level: "Advanced", color: "from-pink-500 to-purple-500" },
-            ].map((workout, i) => (
-              <Card key={i} className="bg-white/5 border-white/10 hover:border-white/20 transition-all group cursor-pointer overflow-hidden">
-                <CardContent className="p-0">
-                  <div className={`h-32 bg-gradient-to-br ${workout.color} flex items-center justify-center`}>
-                    <Dumbbell className="w-12 h-12 text-white/30" />
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Web Platform */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                <CardHeader className="pb-0">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Monitor className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        Web Platform
+                        <Badge variant="secondary" className="text-xs">
+                          <Eye className="w-3 h-3 mr-1" />
+                          Interactive
+                        </Badge>
+                      </CardTitle>
+                      <CardDescription>Full-featured dashboard</CardDescription>
+                    </div>
                   </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-bold text-white text-lg">{workout.title}</h3>
-                      <Badge className="bg-white/10 text-white/70">{workout.level}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted/50 rounded-lg p-6 mb-4">
+                    <div className="bg-background rounded border p-4 shadow-sm">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-3 h-3 bg-destructive rounded-full"></div>
+                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-primary rounded-full"></div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-2 bg-muted rounded w-3/4"></div>
+                        <div className="h-2 bg-muted rounded w-1/2"></div>
+                        <div className="h-8 bg-primary/10 rounded flex items-center px-2">
+                          <div className="w-4 h-4 bg-primary rounded mr-2"></div>
+                          <div className="h-1 bg-muted rounded flex-1"></div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex gap-4 text-sm text-white/50">
-                      <span className="flex items-center gap-1">
-                        <Activity className="w-4 h-4" />
-                        {workout.duration}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Flame className="w-4 h-4" />
-                        {workout.calories} cal
-                      </span>
-                    </div>
-                    <Button className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white" asChild>
-                      <Link href="/health-questions">
-                        Start Workout
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Complete health dashboard</li>
+                    <li>• Advanced AI consultations</li>
+                    <li>• Detailed health analytics</li>
+                    <li>• Family account management</li>
+                  </ul>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/web">
+                        Explore Web Demo
+                        <span className="ml-2">→</span>
                       </Link>
                     </Button>
                   </div>
                 </CardContent>
               </Card>
-            ))}
+
+            {/* Mobile Platform */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                <CardHeader className="pb-0">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Smartphone className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        Mobile App
+                        <Badge variant="secondary" className="text-xs">
+                          <Eye className="w-3 h-3 mr-1" />
+                          Interactive
+                        </Badge>
+                      </CardTitle>
+                      <CardDescription>Health on-the-go</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted/50 rounded-lg p-6 mb-4 flex justify-center">
+                    <div className="bg-background rounded-2xl border p-3 shadow-sm w-32">
+                      <div className="bg-muted rounded-full w-8 h-1 mx-auto mb-3"></div>
+                      <div className="space-y-2">
+                        <div className="h-1.5 bg-muted rounded w-full"></div>
+                        <div className="h-1.5 bg-muted rounded w-2/3"></div>
+                        <div className="h-6 bg-primary/10 rounded flex items-center px-1 mt-3">
+                          <div className="w-3 h-3 bg-primary rounded mr-1"></div>
+                          <div className="h-0.5 bg-muted rounded flex-1"></div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-1 mt-2">
+                          <div className="h-4 bg-muted/50 rounded"></div>
+                          <div className="h-4 bg-muted/50 rounded"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Quick symptom checker</li>
+                    <li>• Medication reminders</li>
+                    <li>• Emergency contacts</li>
+                    <li>• Offline health records</li>
+                  </ul>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/mobile">
+                        Explore Mobile Demo
+                        <span className="ml-2">→</span>
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+            {/* Watch Platform */}
+            <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300 group">
+                <CardHeader className="pb-0">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <Watch className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        Smartwatch
+                        <Badge variant="secondary" className="text-xs">
+                          <Eye className="w-3 h-3 mr-1" />
+                          Interactive
+                        </Badge>
+                      </CardTitle>
+                      <CardDescription>Continuous monitoring</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted/50 rounded-lg p-6 mb-4 flex justify-center">
+                    <div className="bg-background rounded-xl border p-2 shadow-sm w-20 h-20 flex flex-col">
+                      <div className="flex justify-between items-center mb-1">
+                        <div className="w-1 h-1 bg-muted rounded-full"></div>
+                        <div className="text-xs font-mono">12:34</div>
+                      </div>
+                      <div className="flex-1 flex items-center justify-center">
+                        <div className="w-8 h-8 border-2 border-primary rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-primary rounded-full"></div>
+                        </div>
+                      </div>
+                      <div className="text-xs text-center">72 BPM</div>
+                    </div>
+                  </div>
+                  <ul className="space-y-2 text-sm text-muted-foreground">
+                    <li>• Real-time vital signs</li>
+                    <li>• Activity tracking</li>
+                    <li>• Health alerts</li>
+                    <li>• Quick AI consultations</li>
+                  </ul>
+                  <div className="mt-6 text-center">
+                    <Button size="lg" className="px-6" asChild>
+                      <Link href="/demo/watch">
+                        Explore Watch Demo
+                        <span className="ml-2">→</span>
+                      </Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Why UI Beats AI Section */}
+      <section className="py-20 px-4 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 dark:from-indigo-950/20 dark:via-purple-950/20 dark:to-pink-950/20">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge variant="secondary" className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/20 dark:to-pink-900/20">
+              <Sparkles className="w-4 h-4 mr-2" />
+              The Perfect Synergy
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Why <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Intelligent UI</span> Beats Pure AI
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              While AI provides the intelligence, our thoughtfully designed interface transforms complex health data into 
+              intuitive, actionable insights that reduce anxiety and improve outcomes.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
+            <div className="space-y-8">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Eye className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Visual Health Context</h3>
+                  <p className="text-muted-foreground">
+                    Charts, trends, and color-coded indicators provide instant understanding that pure text cannot match. 
+                    Your brain processes visual information 60,000x faster than text.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Zap className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Instant Action</h3>
+                  <p className="text-muted-foreground">
+                    One-tap emergency calls, medication reminders, and health tracking. No need to describe what you want - 
+                    just tap and it's done.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Palette className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Emotional Design</h3>
+                  <p className="text-muted-foreground">
+                    Calming colors, smooth animations, and intuitive layouts reduce health anxiety. 
+                    Good design literally lowers stress hormones.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Layers className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-2">Multi-Modal Intelligence</h3>
+                  <p className="text-muted-foreground">
+                    Voice, touch, camera, and sensors work together seamlessly. The interface adapts to your preferred 
+                    interaction method in real-time.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 rounded-2xl p-8 shadow-2xl border">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold text-lg">Health Overview</h4>
+                    <Badge className="bg-green-500">Excellent</Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-red-50 dark:bg-red-950/20 p-4 rounded-xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Heart className="w-5 h-5 text-red-500" />
+                        <span className="font-medium">Heart</span>
+                      </div>
+                      <div className="text-2xl font-bold text-red-600">72</div>
+                      <div className="w-full bg-red-200 rounded-full h-2 mt-2">
+                        <div className="bg-red-500 h-2 rounded-full w-3/4 animate-pulse"></div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-blue-50 dark:bg-blue-950/20 p-4 rounded-xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Activity className="w-5 h-5 text-blue-500" />
+                        <span className="font-medium">Steps</span>
+                      </div>
+                      <div className="text-2xl font-bold text-blue-600">8.5K</div>
+                      <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
+                        <div className="bg-blue-500 h-2 rounded-full w-4/5"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4 rounded-xl">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Brain className="w-5 h-5 text-purple-500" />
+                      <span className="font-medium">AI Insight</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Your sleep quality improved 15% this week. Great job maintaining your bedtime routine! 🌙
+                    </p>
+                  </div>
+
+                  <Button className="w-full bg-gradient-to-r from-primary to-blue-600">
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Get Personalized Recommendations
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Floating elements for visual appeal */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full animate-bounce"></div>
+              <div className="absolute -bottom-4 -left-4 w-6 h-6 bg-gradient-to-br from-green-400 to-blue-500 rounded-full animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Comparison Grid */}
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/10 dark:to-orange-950/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-700 dark:text-red-400">
+                  <Brain className="w-6 h-6" />
+                  Pure AI Chatbot
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  Text-only responses require interpretation
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  No visual context for complex health data
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  Requires typing detailed questions
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  Can increase anxiety with medical jargon
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                  No emergency action buttons
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/10 dark:to-emerald-950/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-400">
+                  <Sparkles className="w-6 h-6" />
+                  StriveSync AI + UI
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Visual charts show trends instantly
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Color-coded health indicators reduce confusion
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  One-tap actions for common tasks
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Calming design reduces health anxiety
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  Emergency SOS with location sharing
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Enhanced AI Integration Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+              Supercharge with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Your AI</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Already have AI assistants? Import your tokens and create the ultimate health intelligence network.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-8 mb-12">
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                    <Brain className="w-4 h-4 text-white" />
+                  </div>
+                  Multi-AI Consensus
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Get second opinions from multiple AI models. OpenAI for reasoning, Claude for analysis, Gemini for multimodal processing.
+                </p>
+                <Badge variant="outline" className="text-xs">
+                  <Zap className="w-3 h-3 mr-1" />
+                  3x More Accurate
+                </Badge>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                    <Key className="w-4 h-4 text-white" />
+                  </div>
+                  Seamless Import
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Import API tokens from your existing AI tools. We support OpenAI, Anthropic, Google AI, and custom endpoints.
+                </p>
+                <Badge variant="outline" className="text-xs">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Secure & Encrypted
+                </Badge>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  Enhanced Intelligence
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Your AI gets smarter with health-specific training, medical knowledge graphs, and personalized learning.
+                </p>
+                <Badge variant="outline" className="text-xs">
+                  <Brain className="w-3 h-3 mr-1" />
+                  Learns Your Patterns
+                </Badge>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700" asChild>
+              <Link href="/ai-integration">
+                <Key className="w-5 h-5 mr-2" />
+                Import Your AI Tokens Now
+                <Sparkles className="w-5 h-5 ml-2" />
+              </Link>
+            </Button>
+            <p className="text-sm text-muted-foreground mt-4">
+              Free setup • 2-minute integration • Works with existing AI subscriptions
+            </p>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="relative py-24 px-4">
-        <div className="container mx-auto">
-          <div className="relative bg-gradient-to-r from-orange-500/20 via-red-500/20 to-pink-500/20 rounded-3xl border border-white/10 p-12 md:p-16 text-center overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute -top-24 -right-24 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl" />
-              <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
+      <section className="py-20 px-4 bg-gradient-to-br from-primary/5 via-blue-50/50 to-purple-50/50 dark:from-primary/5 dark:via-blue-950/10 dark:to-purple-950/10">
+        <div className="container mx-auto text-center max-w-3xl">
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 to-blue-500/10 px-4 py-2 rounded-full mb-4">
+              <Sparkles className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium">Join 50,000+ Health-Conscious Users</span>
             </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Healthcare?</h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Experience the perfect fusion of AI intelligence and intuitive design. 
+              Start your journey to better health outcomes today.
+            </p>
+          </div>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+            <Button size="lg" className="text-lg px-8 bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90">
+              <Activity className="w-5 h-5 mr-2" />
+              Get Started Free
+            </Button>
+            <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent hover:bg-muted/50" asChild>
+              <Link href="/demo/mobile">
+                <Eye className="w-5 h-5 mr-2" />
+                Try Interactive Demo
+              </Link>
+            </Button>
+          </div>
 
-            <div className="relative">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-8">
-                <Zap className="w-10 h-10 text-white" />
-              </div>
-              
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Ready to Meet Your
-                <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500">
-                  Fitness Best Friend?
-                </span>
-              </h2>
-              
-              <p className="text-white/60 text-lg max-w-2xl mx-auto mb-8">
-                Join thousands who've transformed their health with Strive. 
-                Your personalized AI coach is waiting to help you achieve your goals.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-semibold px-8 h-14 text-lg" asChild>
-                  <Link href="/health-questions">
-                    <Sparkles className="w-5 h-5 mr-2" />
-                    Start Free Today
-                  </Link>
-                </Button>
-                <Button size="lg" variant="outline" className="border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold px-8 h-14 text-lg" asChild>
-                  <Link href="/medical-advice">
-                    Talk to Strive
-                    <ChevronRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-              </div>
+          <div className="grid grid-cols-3 gap-8 text-center">
+            <div>
+              <div className="text-2xl font-bold text-primary mb-1">2 min</div>
+              <div className="text-sm text-muted-foreground">Setup Time</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-primary mb-1">24/7</div>
+              <div className="text-sm text-muted-foreground">AI Support</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-primary mb-1">HIPAA</div>
+              <div className="text-sm text-muted-foreground">Compliant</div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/5 py-12 px-4">
+      <footer className="border-t bg-card/50 py-12 px-4">
         <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
-                <Zap className="w-5 h-5 text-white" />
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <span className="text-xl font-bold">StriveSync</span>
               </div>
-              <span className="text-xl font-bold">Strive</span>
+              <p className="text-muted-foreground">Your trusted AI health companion for better healthcare decisions.</p>
             </div>
-            
-            <div className="flex items-center gap-8 text-sm text-white/50">
-              <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Terms</Link>
-              <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+            <div>
+              <h3 className="font-semibold mb-4">Product</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Features
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Pricing
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    API
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    About
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Careers
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-4">Legal</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Privacy
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    Terms
+                  </Link>
+                </li>
+                <li>
+                  <Link href="#" className="hover:text-foreground transition-colors">
+                    HIPAA
+                  </Link>
+                </li>
+              </ul>
             </div>
           </div>
-          
-          <div className="mt-8 pt-8 border-t border-white/5 text-center">
-            <p className="text-xs text-white/30 max-w-2xl mx-auto">
-              ⚠️ Strive provides general fitness and wellness guidance only. Not medical advice. 
-              Consult healthcare professionals before starting new exercise or diet programs.
-            </p>
+          <div className="border-t mt-8 pt-8 text-center">
+            <div className="bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6 max-w-4xl mx-auto">
+              <p className="text-sm text-red-800 dark:text-red-300 font-semibold mb-2">
+                ⚠️ MEDICAL DISCLAIMER
+              </p>
+              <p className="text-xs text-red-700 dark:text-red-400">
+                This application provides general health information for educational purposes only. It is NOT medical advice and does NOT create a doctor-patient relationship. 
+                Never disregard professional medical advice or delay seeking it because of information from this AI. For emergencies, call 911. 
+                The creators assume no liability for any consequences from use of this service.
+              </p>
+            </div>
+            <p className="text-muted-foreground">&copy; 2024 StriveSync. All rights reserved. This is a demonstration application for educational purposes only.</p>
           </div>
         </div>
       </footer>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        .animate-float-delayed {
-          animation: float 3s ease-in-out infinite 1.5s;
-        }
-      `}</style>
     </div>
   )
 }
