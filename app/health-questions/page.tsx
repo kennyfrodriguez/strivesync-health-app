@@ -1,183 +1,217 @@
 "use client"
 
-import type React from "react"
-import { useChat } from "@ai-sdk/react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { 
   Heart, 
   Brain, 
   AlertTriangle, 
   ArrowLeft, 
   Activity, 
-  Pill,
+  Dumbbell,
+  Target,
+  Flame,
+  Timer,
+  TrendingUp,
+  Zap,
+  Trophy,
   Users,
   Moon,
   Apple,
-  Stethoscope,
-  Dumbbell,
-  Baby,
-  HeartPulse,
-  Shield,
   Loader2,
-  Sparkles
+  Sparkles,
+  X
 } from "lucide-react"
 import Link from "next/link"
 
-export default function HealthQuestionsPage() {
-  const { messages, append, isLoading, error } = useChat({
-    api: "/api/medical-advice",
-  })
+interface Message {
+  role: "user" | "assistant"
+  content: string
+}
 
-  const askQuestion = (question: string) => {
-    append({ role: "user", content: question })
+export default function HealthQuestionsPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [currentQuestion, setCurrentQuestion] = useState("")
+  const [response, setResponse] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const askQuestion = async (question: string) => {
+    setCurrentQuestion(question)
+    setIsModalOpen(true)
+    setIsLoading(true)
+    setError(null)
+    setResponse("")
+
+    try {
+      const res = await fetch("/api/medical-advice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: question }],
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || `API error: ${res.status}`)
+      }
+
+      setResponse(data.content)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const healthCategories = [
+  const fitnessCategories = [
     {
-      title: "Symptom Assessment",
-      icon: Stethoscope,
+      title: "Workout Planning",
+      icon: Dumbbell,
+      color: "from-orange-500 to-red-500",
+      questions: [
+        "Create a beginner-friendly full body workout routine I can do at home",
+        "What's the best workout split for building muscle as a beginner?",
+        "How do I create an effective HIIT workout routine?",
+        "What exercises should I do to strengthen my core?",
+        "Design a 30-minute workout I can do with no equipment"
+      ]
+    },
+    {
+      title: "Goal Setting & Progress",
+      icon: Target,
       color: "from-blue-500 to-cyan-500",
       questions: [
-        "I have a persistent headache and feel dizzy. What could be causing this?",
-        "I'm experiencing chest discomfort and shortness of breath. Should I be concerned?",
-        "I have a fever of 101°F, body aches, and fatigue. What should I do?",
-        "I've been having stomach pain and nausea for 2 days. What could this be?",
-        "I have a sore throat, runny nose, and cough. Is this a cold or something else?"
+        "How do I set realistic fitness goals for weight loss?",
+        "What metrics should I track to measure my fitness progress?",
+        "How long does it take to see results from working out?",
+        "What's a healthy rate of weight loss per week?",
+        "How do I break through a fitness plateau?"
       ]
     },
     {
-      title: "Vital Signs Monitoring",
-      icon: HeartPulse,
-      color: "from-red-500 to-pink-500",
+      title: "Fat Burning & Weight Loss",
+      icon: Flame,
+      color: "from-red-500 to-orange-500",
       questions: [
-        "My resting heart rate is 95 bpm. Is this normal?",
-        "My blood pressure reading is 140/90. Should I be worried?",
-        "My temperature is 99.5°F. Is this a low-grade fever?",
-        "My oxygen saturation is 94%. Is this concerning?",
-        "How do I properly monitor my vital signs at home?"
+        "What are the most effective exercises for burning fat?",
+        "How does cardio compare to weight training for fat loss?",
+        "What's the best time of day to exercise for weight loss?",
+        "How many calories should I burn per workout to lose weight?",
+        "What's the truth about the 'fat burning zone'?"
       ]
     },
     {
-      title: "Medication Guidance",
-      icon: Pill,
-      color: "from-purple-500 to-indigo-500",
+      title: "Workout Optimization",
+      icon: Timer,
+      color: "from-purple-500 to-pink-500",
       questions: [
-        "What are the common side effects of blood pressure medications?",
-        "Can I take ibuprofen with acetaminophen together?",
-        "What should I know about antibiotic interactions with food?",
-        "How do I manage medication side effects safely?",
-        "What are the risks of suddenly stopping my prescribed medication?"
+        "How long should my workouts be for optimal results?",
+        "What's the ideal rest time between sets?",
+        "How many days per week should I work out?",
+        "Should I do cardio before or after weight training?",
+        "How do I warm up properly before a workout?"
       ]
     },
     {
-      title: "Wellness & Prevention",
+      title: "Strength & Muscle Building",
+      icon: TrendingUp,
+      color: "from-emerald-500 to-teal-500",
+      questions: [
+        "How do I build muscle without getting bulky?",
+        "What's the best rep range for building strength?",
+        "How important is progressive overload for muscle growth?",
+        "What compound exercises give the best results?",
+        "How do I prevent muscle loss while losing weight?"
+      ]
+    },
+    {
+      title: "Energy & Performance",
+      icon: Zap,
+      color: "from-yellow-500 to-orange-500",
+      questions: [
+        "How can I boost my energy levels for workouts?",
+        "What should I eat before and after working out?",
+        "How do I improve my endurance and stamina?",
+        "What supplements actually help with performance?",
+        "How does sleep affect my workout performance?"
+      ]
+    },
+    {
+      title: "Motivation & Consistency",
+      icon: Trophy,
+      color: "from-amber-500 to-yellow-500",
+      questions: [
+        "How do I stay motivated to exercise regularly?",
+        "What are strategies to build a consistent workout habit?",
+        "How do I overcome workout burnout?",
+        "What should I do on days when I don't feel like exercising?",
+        "How do I make fitness a sustainable lifestyle?"
+      ]
+    },
+    {
+      title: "Recovery & Rest",
+      icon: Moon,
+      color: "from-indigo-500 to-purple-500",
+      questions: [
+        "How important are rest days for fitness progress?",
+        "What's the best way to recover after an intense workout?",
+        "How do I reduce muscle soreness after exercise?",
+        "Should I work out when I'm sore?",
+        "What's active recovery and should I do it?"
+      ]
+    },
+    {
+      title: "Nutrition for Fitness",
       icon: Apple,
       color: "from-green-500 to-emerald-500",
       questions: [
-        "What are the best practices for maintaining heart health?",
-        "How can I boost my immune system naturally?",
-        "What diet changes can help prevent diabetes?",
-        "How much sleep do I need for optimal health?",
-        "What are the key health screenings I should have at my age?"
+        "How much protein do I need to build muscle?",
+        "What should my macros be for losing fat and gaining muscle?",
+        "How important is meal timing for fitness results?",
+        "What are the best foods to eat for workout recovery?",
+        "How do I calculate my calorie needs for my fitness goals?"
       ]
     },
     {
-      title: "Fitness & Activity",
-      icon: Dumbbell,
-      color: "from-orange-500 to-amber-500",
-      questions: [
-        "How much exercise should I get per week?",
-        "What exercises are safe for someone with joint pain?",
-        "How do I create an effective workout routine for beginners?",
-        "What are the signs of overtraining?",
-        "How can I improve my cardiovascular fitness?"
-      ]
-    },
-    {
-      title: "Mental Health & Sleep",
-      icon: Moon,
-      color: "from-violet-500 to-purple-500",
-      questions: [
-        "What are healthy strategies for managing stress and anxiety?",
-        "How can I improve my sleep quality?",
-        "What are the signs of depression I should watch for?",
-        "How does exercise impact mental health?",
-        "What are effective relaxation techniques for better sleep?"
-      ]
-    },
-    {
-      title: "Family Care",
-      icon: Users,
+      title: "Cardio & Endurance",
+      icon: Heart,
       color: "from-pink-500 to-rose-500",
       questions: [
-        "What are the essential vaccinations my child needs?",
-        "How do I care for a family member with chronic illness?",
-        "What are healthy nutrition guidelines for children?",
-        "How can I support an elderly parent's health?",
-        "What should I include in a family first aid kit?"
+        "How can I improve my running endurance?",
+        "What's better: steady-state cardio or interval training?",
+        "How do I train for my first 5K run?",
+        "What's the best cardio for someone who hates running?",
+        "How often should I do cardio for heart health?"
       ]
     },
     {
-      title: "Women's Health",
-      icon: Heart,
-      color: "from-fuchsia-500 to-pink-500",
-      questions: [
-        "What are normal menstrual cycle variations?",
-        "How can I manage menopause symptoms naturally?",
-        "What prenatal vitamins should I consider during pregnancy?",
-        "What are the warning signs during pregnancy I shouldn't ignore?",
-        "How can I maintain bone health after menopause?"
-      ]
-    },
-    {
-      title: "Pediatric Health",
-      icon: Baby,
+      title: "Group & Social Fitness",
+      icon: Users,
       color: "from-cyan-500 to-blue-500",
       questions: [
-        "What are normal developmental milestones for my toddler?",
-        "How do I know if my baby's fever requires urgent care?",
-        "What are healthy sleep patterns for infants?",
-        "How much water should my child drink daily?",
-        "What are signs of common childhood illnesses?"
+        "What are the benefits of group fitness classes?",
+        "How do I find a good workout partner?",
+        "What are fun ways to exercise with friends or family?",
+        "How can I make my workouts more social and enjoyable?",
+        "What fitness communities or apps can help me stay accountable?"
       ]
     },
     {
-      title: "Emergency Situations",
-      icon: AlertTriangle,
-      color: "from-red-600 to-orange-600",
-      questions: [
-        "What are the warning signs of a heart attack?",
-        "How do I recognize the symptoms of a stroke?",
-        "What should I do if someone is choking?",
-        "When should chest pain be considered an emergency?",
-        "What are signs of severe allergic reactions?"
-      ]
-    },
-    {
-      title: "Chronic Conditions",
-      icon: Shield,
-      color: "from-teal-500 to-cyan-500",
-      questions: [
-        "How can I effectively manage diabetes through lifestyle?",
-        "What are the best practices for living with hypertension?",
-        "How do I manage asthma triggers effectively?",
-        "What dietary changes help with high cholesterol?",
-        "How can I reduce arthritis pain naturally?"
-      ]
-    },
-    {
-      title: "Preventive Care",
+      title: "Fitness Tracking & Tech",
       icon: Activity,
-      color: "from-lime-500 to-green-500",
+      color: "from-violet-500 to-indigo-500",
       questions: [
-        "What cancer screenings should I get at my age?",
-        "How often should I have a physical examination?",
-        "What are the most important health habits to develop?",
-        "How can I prevent common health problems as I age?",
-        "What lifestyle changes reduce my disease risk?"
+        "What fitness metrics should I track with a smartwatch?",
+        "How accurate are fitness trackers for calorie counting?",
+        "What's the best way to use fitness apps effectively?",
+        "How do I interpret my heart rate zones during exercise?",
+        "What technology can help optimize my workouts?"
       ]
     }
   ]
@@ -197,240 +231,105 @@ export default function HealthQuestionsPage() {
                 Back
               </Link>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-primary-foreground" />
+                <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                  <Dumbbell className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold text-foreground">AI Health Questions</span>
+                <span className="text-xl font-bold text-foreground">AI Fitness Coach</span>
               </div>
             </div>
-            <Badge variant="secondary" className="hidden sm:flex">
-              <Sparkles className="w-4 h-4 mr-2" />
-              Instant AI Answers
+            <Badge variant="secondary" className="hidden sm:flex bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30">
+              <Sparkles className="w-4 h-4 mr-2 text-orange-500" />
+              Instant AI Guidance
             </Badge>
           </div>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <div className="text-center mb-12 max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">
-            Get <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Instant AI Answers</span> to Your Health Questions
-          </h1>
-          <p className="text-xl text-muted-foreground mb-6">
-            Click any button below to get immediate, personalized health guidance powered by advanced AI. 
-            All features from the home page, now just one click away.
-          </p>
+        {/* Hero Section - Fitness Focused */}
+        <div className="text-center mb-12 max-w-4xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500/10 to-red-500/10 px-4 py-2 rounded-full mb-6">
+            <Zap className="w-5 h-5 text-orange-500" />
+            <span className="text-sm font-medium text-orange-600 dark:text-orange-400">Your Personal AI Fitness Coach</span>
+          </div>
           
-          {/* Enhanced Legal Disclaimer */}
-          <Card className="border-red-300 bg-red-50 dark:border-red-800 dark:bg-red-950/20 text-left">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-6 h-6 text-red-600" />
-                <CardTitle className="text-red-800 dark:text-red-200 text-lg font-bold">⚠️ CRITICAL MEDICAL DISCLAIMER</CardTitle>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance">
+            Transform Your Fitness with{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">
+              AI-Powered Guidance
+            </span>
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Get instant, personalized workout advice, nutrition tips, and motivation from your AI fitness coach. 
+            Click any question below to start your fitness journey.
+          </p>
+
+          {/* Benefits Grid */}
+          <div className="grid md:grid-cols-3 gap-4 mb-8">
+            <Card className="border-0 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/20 dark:to-red-950/20">
+              <CardContent className="p-4 text-center">
+                <Target className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Personalized Plans</h3>
+                <p className="text-sm text-muted-foreground">Workouts tailored to your goals</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20">
+              <CardContent className="p-4 text-center">
+                <Brain className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Expert Knowledge</h3>
+                <p className="text-sm text-muted-foreground">Science-backed fitness advice</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20">
+              <CardContent className="p-4 text-center">
+                <Zap className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                <h3 className="font-semibold">Instant Answers</h3>
+                <p className="text-sm text-muted-foreground">No waiting, get help now</p>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Disclaimer - Condensed */}
+          <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 text-left max-w-2xl mx-auto">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div className="text-sm text-amber-800 dark:text-amber-300">
+                <p className="font-semibold mb-1">Fitness Disclaimer</p>
+                <p>This AI provides general fitness guidance only. Consult a healthcare provider before starting any new exercise program, especially if you have health conditions.</p>
               </div>
-            </CardHeader>
-            <CardContent className="text-sm text-red-800 dark:text-red-300 space-y-3">
-              <p className="font-bold text-base">
-                THIS IS NOT MEDICAL ADVICE. FOR INFORMATIONAL AND EDUCATIONAL PURPOSES ONLY.
-              </p>
-              <div className="space-y-2">
-                <p>
-                  • <strong>NOT A SUBSTITUTE:</strong> This AI tool is NOT a substitute for professional medical advice, diagnosis, or treatment. 
-                  Never disregard or delay seeking professional medical advice because of information provided by this AI.
-                </p>
-                <p>
-                  • <strong>NO DOCTOR-PATIENT RELATIONSHIP:</strong> Use of this service does not create a doctor-patient relationship. 
-                  AI responses are not reviewed by licensed medical professionals.
-                </p>
-                <p>
-                  • <strong>EMERGENCIES:</strong> If you are experiencing a medical emergency, <strong className="text-lg">CALL 911 IMMEDIATELY</strong> or 
-                  go to the nearest emergency room. Do not rely on this AI for emergency medical situations.
-                </p>
-                <p>
-                  • <strong>ACCURACY NOT GUARANTEED:</strong> AI may provide inaccurate, incomplete, or outdated information. 
-                  Always verify with qualified healthcare providers.
-                </p>
-                <p>
-                  • <strong>NO LIABILITY:</strong> By using this service, you acknowledge that the creators, developers, and operators 
-                  assume no liability for any consequences arising from the use of this AI tool.
-                </p>
-              </div>
-              <p className="font-bold text-center text-base pt-2 border-t border-red-300">
-                ALWAYS CONSULT WITH QUALIFIED HEALTHCARE PROFESSIONALS FOR MEDICAL DECISIONS
-              </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
-
-        {/* Error Alert */}
-        {error && (
-          <Alert variant="destructive" className="mb-8 max-w-3xl mx-auto">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Error</AlertTitle>
-            <AlertDescription>
-              {error.message || "An error occurred while communicating with the AI. Please try again."}
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Response Section */}
-        {messages.length > 0 && (
-          <Card className="mb-8 border-2 border-primary/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Brain className="w-5 h-5 text-primary" />
-                AI Health Assistant Response
-              </CardTitle>
-              <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-md">
-                <p className="text-xs text-amber-800 dark:text-amber-300 font-semibold">
-                  ⚠️ REMINDER: This is AI-generated information only, NOT medical advice. Always consult healthcare professionals for actual medical decisions. Call 911 for emergencies.
-                </p>
-              </div>
-            </CardHeader>
-            <CardContent className="max-h-[500px] overflow-y-auto">
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`max-w-[85%] ${
-                        message.role === "user" 
-                          ? "bg-gradient-to-r from-primary to-blue-600 text-primary-foreground" 
-                          : "bg-muted"
-                      } rounded-lg p-4`}
-                    >
-                      <div className="whitespace-pre-wrap leading-relaxed">
-                        {message.content}
-                      </div>
-                      {/* Tool invocations rendering */}
-                      {message.toolInvocations?.map((toolInvocation, index) => {
-                        if (toolInvocation.state !== "result") return null
-                        
-                        if (toolInvocation.toolName === "medicalAssessment") {
-                          const result = toolInvocation.result as {
-                            urgencyLevel: string
-                            recommendations: string[]
-                            followUpAdvice: string
-                          }
-                          return (
-                            <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
-                              <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                <Stethoscope className="w-4 h-4" />
-                                Medical Assessment
-                              </h4>
-                              <div className="space-y-2 text-sm">
-                                <div>
-                                  <strong>Urgency Level:</strong>
-                                  <Badge
-                                    variant={
-                                      result.urgencyLevel === "high"
-                                        ? "destructive"
-                                        : result.urgencyLevel === "medium"
-                                          ? "secondary"
-                                          : "outline"
-                                    }
-                                    className="ml-2"
-                                  >
-                                    {result.urgencyLevel}
-                                  </Badge>
-                                </div>
-                                <div>
-                                  <strong>Recommendations:</strong>
-                                  <ul className="list-disc list-inside mt-1">
-                                    {result.recommendations.map((rec: string, i: number) => (
-                                      <li key={i}>{rec}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                                <div>
-                                  <strong>Follow-up:</strong> {result.followUpAdvice}
-                                </div>
-                              </div>
-                            </div>
-                          )
-                        }
-                        
-                        if (toolInvocation.toolName === "emergencyCheck") {
-                          const result = toolInvocation.result as {
-                            isEmergency: boolean
-                            emergencyAdvice: string | null
-                            urgencyScore: number
-                          }
-                          return (
-                            <div
-                              key={index}
-                              className={`mt-3 p-3 rounded border ${
-                                result.isEmergency 
-                                  ? "bg-destructive/10 border-destructive" 
-                                  : "bg-background/10"
-                              }`}
-                            >
-                              <h4 className="font-semibold mb-2 flex items-center gap-2">
-                                {result.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
-                                Emergency Assessment
-                              </h4>
-                              <div className="space-y-2 text-sm">
-                                <div>
-                                  <strong>Urgency Score:</strong> {result.urgencyScore}/10
-                                </div>
-                                {result.isEmergency && (
-                                  <div className="text-destructive font-semibold">
-                                    ⚠️ {result.emergencyAdvice}
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          )
-                        }
-                        
-                        return null
-                      })}
-                    </div>
-                  </div>
-                ))}
-
-                {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-muted rounded-lg p-4 flex items-center gap-2">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span className="text-sm text-muted-foreground">StriveSync AI is analyzing...</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Question Categories */}
         <div className="space-y-8">
-          {healthCategories.map((category, categoryIndex) => {
+          {fitnessCategories.map((category, categoryIndex) => {
             const IconComponent = category.icon
             return (
-              <Card key={categoryIndex} className="border-0 shadow-lg">
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center`}>
+              <Card key={categoryIndex} className="border-0 shadow-lg overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100/50 dark:from-gray-900/50 dark:to-gray-800/30">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 bg-gradient-to-br ${category.color} rounded-xl flex items-center justify-center shadow-lg`}>
                       <IconComponent className="w-6 h-6 text-white" />
                     </div>
                     <div>
                       <CardTitle className="text-2xl">{category.title}</CardTitle>
-                      <CardDescription>Click any question to get instant AI guidance</CardDescription>
+                      <CardDescription>Click any question for instant AI coaching</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="p-6">
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
                     {category.questions.map((question, questionIndex) => (
                       <Button
                         key={questionIndex}
                         onClick={() => askQuestion(question)}
-                        disabled={isLoading}
                         variant="outline"
-                        className="h-auto py-4 px-4 text-left justify-start whitespace-normal hover:shadow-md transition-all hover:border-primary/50"
+                        className="h-auto py-4 px-4 text-left justify-start whitespace-normal hover:shadow-md transition-all hover:border-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 group"
                       >
                         <div className="flex items-start gap-2 w-full">
-                          <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0 text-primary" />
+                          <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0 text-orange-500 group-hover:text-orange-600" />
                           <span className="text-sm leading-relaxed">{question}</span>
                         </div>
                       </Button>
@@ -443,31 +342,84 @@ export default function HealthQuestionsPage() {
         </div>
 
         {/* Call to Action */}
-        <Card className="mt-12 border-0 shadow-xl bg-gradient-to-br from-primary/5 to-blue-500/5">
-          <CardContent className="p-8 text-center">
-            <h3 className="text-2xl font-bold mb-4">Need More Personalized Guidance?</h3>
-            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-              For detailed symptom analysis and personalized health advice, visit our full AI Medical Advice page 
-              where you can have an in-depth consultation.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" asChild className="bg-gradient-to-r from-primary to-blue-600">
-                <Link href="/medical-advice">
-                  <Brain className="w-5 h-5 mr-2" />
-                  Full AI Consultation
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/dashboard">
-                  <Activity className="w-5 h-5 mr-2" />
-                  View Health Dashboard
-                </Link>
-              </Button>
+        <Card className="mt-12 border-0 shadow-xl bg-gradient-to-br from-orange-500 to-red-500 text-white overflow-hidden">
+          <CardContent className="p-8 text-center relative">
+            <div className="absolute inset-0 bg-[url('/placeholder.svg')] opacity-5" />
+            <div className="relative">
+              <Trophy className="w-12 h-12 mx-auto mb-4 text-yellow-300" />
+              <h3 className="text-3xl font-bold mb-4">Ready for a Deeper Consultation?</h3>
+              <p className="text-white/90 mb-6 max-w-2xl mx-auto text-lg">
+                Get personalized workout plans, detailed nutrition advice, and comprehensive fitness coaching with our full AI consultation.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" asChild className="bg-white text-orange-600 hover:bg-gray-100">
+                  <Link href="/medical-advice">
+                    <Brain className="w-5 h-5 mr-2" />
+                    Full AI Consultation
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white/10">
+                  <Link href="/dashboard">
+                    <Activity className="w-5 h-5 mr-2" />
+                    View Fitness Dashboard
+                  </Link>
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Response Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 pr-8">
+              <div className="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
+                <Brain className="w-5 h-5 text-white" />
+              </div>
+              AI Fitness Coach
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="flex-1 overflow-y-auto space-y-4 py-4">
+            {/* User Question */}
+            <div className="flex justify-end">
+              <div className="max-w-[85%] bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-4">
+                <p className="text-sm">{currentQuestion}</p>
+              </div>
+            </div>
+
+            {/* AI Response */}
+            <div className="flex justify-start">
+              <div className="max-w-[85%] bg-muted rounded-lg p-4">
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm text-muted-foreground">Your AI coach is thinking...</span>
+                  </div>
+                ) : error ? (
+                  <div className="text-destructive">
+                    <p className="font-semibold">Error</p>
+                    <p className="text-sm">{error}</p>
+                  </div>
+                ) : (
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">
+                    {response}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer */}
+          <div className="border-t pt-4">
+            <p className="text-xs text-muted-foreground text-center">
+              ⚠️ This is AI-generated fitness guidance. Always consult healthcare professionals before starting new exercise programs.
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
-
