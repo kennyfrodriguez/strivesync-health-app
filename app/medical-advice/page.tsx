@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,18 +8,97 @@ import { Textarea } from "@/components/ui/textarea"
 import { Heart, Brain, AlertTriangle, Send, Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
+interface Message {
+  id: string
+  role: "user" | "assistant"
+  content: string
+}
+
 export default function MedicalAdvicePage() {
   const [input, setInput] = useState("")
-  const { messages, isLoading, error, append } = useChat({
-    api: "/api/medical-advice",
-  })
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  const sendMessage = async (content: string) => {
+    if (!content.trim() || isLoading) return
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: content.trim(),
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch("/api/medical-advice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
+      let assistantContent = ""
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "",
+      }
+      setMessages((prev) => [...prev, assistantMessage])
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          const chunk = decoder.decode(value, { stream: true })
+          // Parse the streaming response
+          const lines = chunk.split("\n")
+          for (const line of lines) {
+            if (line.startsWith("0:")) {
+              // Text content
+              try {
+                const text = JSON.parse(line.slice(2))
+                assistantContent += text
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === assistantMessage.id
+                      ? { ...m, content: assistantContent }
+                      : m
+                  )
+                )
+              } catch {
+                // Skip parse errors
+              }
+            }
+          }
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Something went wrong"))
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input.trim() && !isLoading) {
-      append({ role: "user", content: input })
-      setInput("")
-    }
+    sendMessage(input)
   }
 
   return (
@@ -96,7 +174,7 @@ export default function MedicalAdvicePage() {
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
                 onClick={() =>
-                  append({ role: "user", content: "I'm experiencing headaches and fatigue for the past few days. What could be causing this?" })
+                  sendMessage("I'm experiencing headaches and fatigue for the past few days. What could be causing this?")
                 }
               >
                 <CardHeader className="pb-3">
@@ -107,7 +185,7 @@ export default function MedicalAdvicePage() {
 
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
-                onClick={() => append({ role: "user", content: "Can you provide general wellness tips for maintaining good health?" })}
+                onClick={() => sendMessage("Can you provide general wellness tips for maintaining good health?")}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Wellness Tips</CardTitle>
@@ -117,7 +195,7 @@ export default function MedicalAdvicePage() {
 
               <Card
                 className="cursor-pointer hover:shadow-md transition-shadow border-0 shadow-sm"
-                onClick={() => append({ role: "user", content: "I need help understanding my medication side effects and interactions." })}
+                onClick={() => sendMessage("I need help understanding my medication side effects and interactions.")}
               >
                 <CardHeader className="pb-3">
                   <CardTitle className="text-lg">Medication Info</CardTitle>
@@ -149,87 +227,13 @@ export default function MedicalAdvicePage() {
                 className={`max-w-[80%] ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"} rounded-lg p-4`}
               >
                 <div className="whitespace-pre-wrap">
-                  {message.content}
+                  {message.content || (message.role === "assistant" && isLoading ? "..." : "")}
                 </div>
-                {/* Tool invocations rendering */}
-                {message.toolInvocations?.map((toolInvocation, index) => {
-                  if (toolInvocation.state !== "result") return null
-                  
-                  if (toolInvocation.toolName === "medicalAssessment") {
-                    const result = toolInvocation.result as {
-                      urgencyLevel: string
-                      recommendations: string[]
-                      followUpAdvice: string
-                    }
-                    return (
-                      <div key={index} className="mt-3 p-3 bg-background/10 rounded border">
-                        <h4 className="font-semibold mb-2">Medical Assessment</h4>
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <strong>Urgency Level:</strong>
-                            <Badge
-                              variant={
-                                result.urgencyLevel === "high"
-                                  ? "destructive"
-                                  : result.urgencyLevel === "medium"
-                                    ? "secondary"
-                                    : "outline"
-                              }
-                              className="ml-2"
-                            >
-                              {result.urgencyLevel}
-                            </Badge>
-                          </div>
-                          <div>
-                            <strong>Recommendations:</strong>
-                            <ul className="list-disc list-inside mt-1">
-                              {result.recommendations.map((rec: string, i: number) => (
-                                <li key={i}>{rec}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <strong>Follow-up:</strong> {result.followUpAdvice}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  if (toolInvocation.toolName === "emergencyCheck") {
-                    const result = toolInvocation.result as {
-                      isEmergency: boolean
-                      emergencyAdvice: string | null
-                      urgencyScore: number
-                    }
-                    return (
-                      <div
-                        key={index}
-                        className={`mt-3 p-3 rounded border ${result.isEmergency ? "bg-destructive/10 border-destructive" : "bg-background/10"}`}
-                      >
-                        <h4 className="font-semibold mb-2 flex items-center gap-2">
-                          {result.isEmergency && <AlertTriangle className="w-4 h-4 text-destructive" />}
-                          Emergency Assessment
-                        </h4>
-                        <div className="space-y-2 text-sm">
-                          <div>
-                            <strong>Urgency Score:</strong> {result.urgencyScore}/10
-                          </div>
-                          {result.isEmergency && (
-                            <div className="text-destructive font-semibold">⚠️ {result.emergencyAdvice}</div>
-                          )}
-                        </div>
-                      </div>
-                    )
-                  }
-                  
-                  return null
-                })}
               </div>
             </div>
           ))}
 
-          {isLoading && (
+          {isLoading && messages[messages.length - 1]?.role === "user" && (
             <div className="flex justify-start">
               <div className="bg-muted rounded-lg p-4 flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
