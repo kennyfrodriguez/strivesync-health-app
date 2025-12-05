@@ -14,21 +14,38 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  // Check if API key is configured
-  if (!process.env.OPENAI_API_KEY) {
+  try {
+    // Check if API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return Response.json(
+        { error: "OpenAI API key is not configured" },
+        { status: 500 }
+      )
+    }
+
+    const body = await req.json()
+    const { messages } = body
+
+    if (!messages || !Array.isArray(messages)) {
+      return Response.json(
+        { error: "Invalid messages format" },
+        { status: 400 }
+      )
+    }
+
+    const result = await streamText({
+      model: openai("gpt-4o-mini"),
+      system: `You are StriveSync, a helpful medical AI assistant. Provide general health information but always recommend consulting healthcare professionals for medical decisions.`,
+      messages,
+    })
+
+    return result.toDataStreamResponse()
+  } catch (error) {
+    console.error("API Error:", error)
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
     return Response.json(
-      { error: "OpenAI API key is not configured" },
+      { error: errorMessage },
       { status: 500 }
     )
   }
-
-  const { messages } = await req.json()
-
-  const result = await streamText({
-    model: openai("gpt-4o-mini"),
-    system: `You are StriveSync, a helpful medical AI assistant. Provide general health information but always recommend consulting healthcare professionals for medical decisions.`,
-    messages,
-  })
-
-  return result.toDataStreamResponse()
 }
