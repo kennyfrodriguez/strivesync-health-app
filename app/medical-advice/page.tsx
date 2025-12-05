@@ -17,7 +17,7 @@ export default function MedicalAdvicePage() {
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (input.trim() && !isLoading) {
+    if (input?.trim() && !isLoading) {
       handleSubmit(e)
     }
   }
@@ -255,7 +255,7 @@ export default function MedicalAdvicePage() {
                 </p>
                 <Button
                   type="submit"
-                  disabled={!input.trim() || isLoading}
+                  disabled={!input?.trim() || isLoading}
                   className="flex items-center gap-2"
                 >
                   {isLoading ? (
