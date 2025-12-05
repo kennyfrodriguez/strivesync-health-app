@@ -70,9 +70,18 @@ const tools = {
 } as const
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+  try {
+    // Check if API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return new Response(
+        JSON.stringify({ error: "OpenAI API key is not configured" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      )
+    }
 
-  const systemPrompt = `You are StriveSync, a professional medical AI assistant. You provide helpful medical information and guidance, but you are not a replacement for professional medical care.
+    const { messages } = await req.json()
+
+    const systemPrompt = `You are StriveSync, a professional medical AI assistant. You provide helpful medical information and guidance, but you are not a replacement for professional medical care.
 
 IMPORTANT GUIDELINES:
 - Always emphasize that you are not a substitute for professional medical advice
@@ -85,13 +94,20 @@ IMPORTANT GUIDELINES:
 
 Remember: You provide information and guidance, but users should always consult with qualified healthcare professionals for medical decisions.`
 
-  const result = streamText({
-    model: openai("gpt-4"),
-    system: systemPrompt,
-    messages,
-    tools,
-    maxSteps: 3,
-  })
+    const result = streamText({
+      model: openai("gpt-4"),
+      system: systemPrompt,
+      messages,
+      tools,
+      maxSteps: 3,
+    })
 
-  return result.toDataStreamResponse()
+    return result.toDataStreamResponse()
+  } catch (error) {
+    console.error("Medical advice API error:", error)
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : "An error occurred" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    )
+  }
 }
