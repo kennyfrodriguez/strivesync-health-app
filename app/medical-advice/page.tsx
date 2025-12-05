@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useChat } from "@ai-sdk/react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,9 +10,18 @@ import { Heart, Brain, AlertTriangle, Send, Loader2, ArrowLeft } from "lucide-re
 import Link from "next/link"
 
 export default function MedicalAdvicePage() {
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error, append } = useChat({
+  const [input, setInput] = useState("")
+  const { messages, isLoading, error, append } = useChat({
     api: "/api/medical-advice",
   })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (input.trim() && !isLoading) {
+      append({ role: "user", content: input })
+      setInput("")
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -234,9 +244,8 @@ export default function MedicalAdvicePage() {
           <CardContent className="p-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               <Textarea
-                name="prompt"
-                value={input ?? ""}
-                onChange={handleInputChange}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 placeholder="Describe your symptoms, ask about health conditions, or request wellness advice..."
                 className="min-h-[100px] resize-none"
                 disabled={isLoading}
@@ -247,7 +256,7 @@ export default function MedicalAdvicePage() {
                 </p>
                 <Button
                   type="submit"
-                  disabled={!(input ?? "").trim() || isLoading}
+                  disabled={!input.trim() || isLoading}
                   className="flex items-center gap-2"
                 >
                   {isLoading ? (
