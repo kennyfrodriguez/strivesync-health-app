@@ -1,5 +1,5 @@
 import { openai } from "@ai-sdk/openai"
-import { streamText } from "ai"
+import { generateText } from "ai"
 
 export const maxDuration = 30
 
@@ -33,13 +33,13 @@ export async function POST(req: Request) {
       )
     }
 
-    const result = await streamText({
+    const { text } = await generateText({
       model: openai("gpt-4o-mini"),
       system: `You are StriveSync, a helpful medical AI assistant. Provide general health information but always recommend consulting healthcare professionals for medical decisions.`,
       messages,
     })
 
-    return result.toDataStreamResponse()
+    return Response.json({ content: text })
   } catch (error) {
     console.error("API Error:", error)
     const errorMessage = error instanceof Error ? error.message : "Unknown error"

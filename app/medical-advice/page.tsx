@@ -46,50 +46,18 @@ export default function MedicalAdvicePage() {
         }),
       })
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.error || `API error: ${response.status}`)
-      }
+      const data = await response.json()
 
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
-      let assistantContent = ""
+      if (!response.ok) {
+        throw new Error(data.error || `API error: ${response.status}`)
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "",
+        content: data.content,
       }
       setMessages((prev) => [...prev, assistantMessage])
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-
-          const chunk = decoder.decode(value, { stream: true })
-          // Parse the streaming response
-          const lines = chunk.split("\n")
-          for (const line of lines) {
-            if (line.startsWith("0:")) {
-              // Text content
-              try {
-                const text = JSON.parse(line.slice(2))
-                assistantContent += text
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantMessage.id
-                      ? { ...m, content: assistantContent }
-                      : m
-                  )
-                )
-              } catch {
-                // Skip parse errors
-              }
-            }
-          }
-        }
-      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Something went wrong"))
     } finally {
